@@ -1,0 +1,71 @@
+{
+    "first_name": "John2",
+    "last_name": "Doe",
+    "name": "John2 Doe",
+    "networth": 84271.0,
+    "money_owed": 11254,
+    "money_spent": 3890.88,
+    "money_added": 15874.09,
+    "largest_transactions": [
+        {
+            "transaction_id": "67cb640e9683f20dd518d178",
+            "amount": 864.81,
+            "description": "Electronics",
+            "transaction_date": "2025-03-01"
+        },
+        {
+            "transaction_id": "67cb640f9683f20dd518d17c",
+            "amount": 754.28,
+            "description": "Electronics",
+            "transaction_date": "2025-02-27"
+        },
+        {
+            "transaction_id": "67cb64139683f20dd518d186",
+            "amount": 705.66,
+            "description": "ATM withdrawal",
+            "transaction_date": "2025-03-02"
+        }
+    ],
+    "largest_deposits": [
+        {
+            "transaction_id": "67cb64109683f20dd518d17f",
+            "amount": 9291.22,
+            "description": "Refund",
+            "transaction_date": "2025-02-20"
+        },
+        {
+            "transaction_id": "67cb640d9683f20dd518d175",
+            "amount": 3382.65,
+            "description": "Investment return",
+            "transaction_date": "2025-02-07"
+        },
+        {
+            "transaction_id": "67cb64119683f20dd518d181",
+            "amount": 3200.22,
+            "description": "Refund",
+            "transaction_date": "2025-02-18"
+        }
+    ],
+    "account_balances": {
+        "Emergency Fund": 53583.19,
+        "Daily Expenses": 41941.81
+    },
+    "summary": "Hey John2! Your financial snapshot shows you're on track - with recent deposits outpacing spending. It's great to see your spending habits, but watch out for those splurges in Entertainment, Electronics, and Dining. Remember, mindful spending now paves the way for a brighter financial future!",
+    "stocks": [
+        {
+            "ticker": "^GSPC",
+            "price": 5769.15,
+            "status": "Down"
+        },
+        {
+            "ticker": "^DJI",
+            "price": 42794.26,
+            "status": "Up"
+        },
+        {
+            "ticker": "^IXIC",
+            "price": 18193.16,
+            "status": "Down"
+        }
+    ]
+}
