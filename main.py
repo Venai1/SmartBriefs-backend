@@ -48,7 +48,7 @@ def read_root():
             "/get_all_user_data/{customer_id}",
             "/cron/send_weekly_newsletters",
             "/cron/send_monthly_newsletters",
-            "/diagnostic/all"  # New diagnostic endpoint
+            "/send_demo_email/{email}"
         ]
     }
     
