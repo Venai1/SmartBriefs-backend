@@ -16,6 +16,9 @@ from helperFunctions.create_account_transactions import populate_and_create_all_
 import generate_newsletter
 from starlette.middleware.cors import CORSMiddleware
 import send_email
+# Add this to the import section of your main.py
+from api_tests import add_diagnostic_routes
+
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
@@ -33,6 +36,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add the diagnostic routes
+add_diagnostic_routes(app)
+
+# This adds a root endpoint to prevent 404 errors
+@app.get("/")
+def read_root():
+    """Root endpoint to provide API information"""
+    return {
+        "app": "Financial Newsletter API",
+        "status": "running",
+        "version": "1.0.0",
+        "endpoints": [
+            "/register",
+            "/get_all_user_data/{customer_id}",
+            "/cron/send_weekly_newsletters",
+            "/cron/send_monthly_newsletters",
+            "/diagnostic/all"  # New diagnostic endpoint
+        ]
+    }
+    
 class Address(BaseModel):
     street_number: str
     street_name: str
