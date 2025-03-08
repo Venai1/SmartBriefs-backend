@@ -23,8 +23,7 @@ def create_random_deposit(account_id):
         ])
     }
 
-    url = f"{os.getenv("NESSIE_API_URL")}/accounts/{account_id}/deposits?key={os.getenv("NESSIE_API_KEY")}"
-
+    url = f"{os.getenv('NESSIE_API_URL')}/accounts/{account_id}/deposits?key={os.getenv('NESSIE_API_KEY')}"
     # Send request
     headers = {
         "Content-Type": "application/json",
