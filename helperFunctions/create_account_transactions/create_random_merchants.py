@@ -29,7 +29,7 @@ def create_random_merchants():
     }
 
     # API endpoint for creating a merchant
-    url = f"{os.getenv("NESSIE_API_URL")}/merchants?key={os.getenv('NESSIE_API_KEY')}"
+    url = f"{os.getenv('NESSIE_API_URL')}/merchants?key={os.getenv('NESSIE_API_KEY')}"
 
     headers = {
         "Content-Type": "application/json",

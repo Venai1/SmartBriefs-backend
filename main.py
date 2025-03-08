@@ -253,7 +253,7 @@ def register_user(request: RegisterRequest):
 
 @app.post("/get_all_user_data/{customer_id}")
 def get_all_user_data(customer_id:str):
-    bank_manager = BankDataManager(os.getenv("NESSIE_API_URL"), os.getenv('NESSIE_API_KEY'))
+    bank_manager = BankDataManager(os.getenv('NESSIE_API_URL'), os.getenv('NESSIE_API_KEY'))
     timestamp = "30d"
     bank_manager.fetch_customer_data(customer_id)
 

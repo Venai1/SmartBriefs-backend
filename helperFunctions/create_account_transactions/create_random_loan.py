@@ -24,7 +24,7 @@ def create_random_loan(account_id):
     }
 
     # API endpoint for creating a loan
-    url = f"{os.getenv("NESSIE_API_URL")}/accounts/{account_id}/loans?key={os.getenv('NESSIE_API_KEY')}"
+    url = f"{os.getenv('NESSIE_API_URL')}/accounts/{account_id}/loans?key={os.getenv('NESSIE_API_KEY')}"
 
     # Send request
     headers = {

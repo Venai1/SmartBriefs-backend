@@ -25,7 +25,7 @@ def create_random_account(customer_id):
         "account_number": account_number
     }
 
-    url = f"{os.getenv("NESSIE_API_URL")}/customers/{customer_id}/accounts?key={os.getenv('NESSIE_API_KEY')}"
+    url = f"{os.getenv('NESSIE_API_URL')}/customers/{customer_id}/accounts?key={os.getenv('NESSIE_API_KEY')}"
 
     headers = {
         "Content-Type": "application/json",

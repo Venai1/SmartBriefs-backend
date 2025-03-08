@@ -24,7 +24,7 @@ def create_random_transfer(payer_account_id, payee_account_id):
         ])
     }
 
-    url = f"{os.getenv("NESSIE_API_URL")}/accounts/{payer_account_id}/transfers?key={os.getenv('NESSIE_API_KEY')}"
+    url = f"{os.getenv('NESSIE_API_URL')}/accounts/{payer_account_id}/transfers?key={os.getenv('NESSIE_API_KEY')}"
 
     headers = {
         "Content-Type": "application/json",
