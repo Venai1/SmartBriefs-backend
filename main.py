@@ -8,15 +8,13 @@ import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 import pandas as pd
-import numpy as np
-from pprint import pprint 
-from helperFunctions.create_account_transactions.populate_account_with_transactions import populate_account_with_transactions
 from helperFunctions.generate_open_ai_summary import generate_open_ai_summary
 from helperFunctions.get_bank_data import BankDataManager
 from helperFunctions.get_news_articles_and_summary import get_news_articles_and_summary
 from helperFunctions.get_stocks_data import get_stocks_data
 from helperFunctions.create_account_transactions import populate_and_create_all_accounts_with_transactions
 import generate_newsletter
+from starlette.middleware.cors import CORSMiddleware
 
 
 cred = credentials.Certificate("serviceAccountKey.json")
@@ -27,6 +25,13 @@ tickers = ["^GSPC", "^DJI", "^IXIC"]
 
 app = FastAPI()
 load_dotenv()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Address(BaseModel):
     street_number: str
@@ -45,7 +50,7 @@ class RegisterRequest(BaseModel):
 def convert_numpy_types(obj):
     """Convert numpy types to Python native types recursively in dictionaries and lists."""
     import numpy as np
-    
+
     if isinstance(obj, dict):
         return {key: convert_numpy_types(value) for key, value in obj.items()}
     elif isinstance(obj, list):
@@ -68,8 +73,9 @@ def convert_numpy_types(obj):
 def register_user(request: RegisterRequest):
     user_ref = db.collection("users").document(request.email)
     user_doc = user_ref.get()
-    
+
     if user_doc.exists:
+        # Existing user handling logic remains the same
         user_data = user_doc.to_dict()
         address = {
             "street_number": "",
@@ -78,8 +84,7 @@ def register_user(request: RegisterRequest):
             "state": "",
             "zip": ""
         }
-        
-        # If address exists in the stored user data, use it
+
         if "address" in user_data:
             address = {
                 "street_number": user_data["address"].get("street_number", ""),
@@ -88,7 +93,7 @@ def register_user(request: RegisterRequest):
                 "state": user_data["address"].get("state", ""),
                 "zip": user_data["address"].get("zip", "")
             }
-        
+
         return {
             "status": "success",
             "message": "Customer already created",
@@ -104,8 +109,24 @@ def register_user(request: RegisterRequest):
             },
             "database_data": user_data
         }
-    
 
+    # Format state and zip code properly
+    # State should be a valid 2-letter US state code
+    state = request.address.state.upper()[:2]  # Ensure 2 letter state code
+    if len(state) < 2:
+        state = "CA"  # Default to California if invalid
+
+    # Zip should be a valid 5-digit US zip code
+    zip_code = request.address.zip
+    # Keep only digits
+    zip_digits = ''.join(c for c in zip_code if c.isdigit())
+    # Ensure 5 digits, pad with zeros if needed
+    if len(zip_digits) < 5:
+        zip_code = zip_digits.zfill(5)  # Pad with leading zeros
+    else:
+        zip_code = zip_digits[:5]  # Take only first 5 digits
+
+    # Prepare data for Capital One API - ensure it strictly follows API requirements
     capital_one_data = {
         "first_name": request.first_name,
         "last_name": request.last_name,
@@ -113,60 +134,114 @@ def register_user(request: RegisterRequest):
             "street_number": request.address.street_number,
             "street_name": request.address.street_name,
             "city": request.address.city,
-            "state": request.address.state,
-            "zip": request.address.zip
+            "state": state,  # Using formatted state
+            "zip": zip_code  # Using formatted zip
         }
     }
-    
+
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
-    
+
     try:
-        url = f"{os.getenv("NESSIE_API_URL")}/customers?key={os.getenv("NESSIE_API_KEY")}"
+        # Get API details from environment variables
+        api_url = os.getenv('NESSIE_API_URL', 'http://api.nessieisreal.com')
+        api_key = os.getenv('NESSIE_API_KEY')
+
+        # Debug prints - remove in production
+        print(f"Using API URL: {api_url}")
+        print(f"Using API Key: {api_key[:5]}...") # Print only first 5 chars for security
+
+        # Construct URL with proper error handling
+        if not api_url or not api_key:
+            raise ValueError("Missing NESSIE_API_URL or NESSIE_API_KEY environment variables")
+
+        # Ensure the URL is properly constructed
+        if api_url.endswith('/'):
+            api_url = api_url[:-1]  # Remove trailing slash if present
+
+        url = f"{api_url}/customers?key={api_key}"
+
+        # Debug the request before sending
+        print(f"Making request to: {url}")
+        print(f"With headers: {headers}")
+        print(f"With data: {json.dumps(capital_one_data)}")
+
+        # Make the request with proper error handling
+        json_data = json.dumps(capital_one_data)
         response = requests.post(
             url,
-            data=json.dumps(capital_one_data),
+            data=json_data,
             headers=headers
         )
-        
+
+        # Debug the response
+        print(f"Response status: {response.status_code}")
+        print(f"Response body: {response.text}")
+
+        # Handle response status code explicitly
+        if response.status_code == 400:
+            error_detail = f"Bad request to Capital One API. Response: {response.text}"
+            print(error_detail)
+            raise HTTPException(status_code=400, detail=error_detail)
+
         response.raise_for_status()
-        capital_one_response = response.json()
-        
+
+        # Parse JSON response - with error handling
+        try:
+            capital_one_response = response.json()
+        except json.JSONDecodeError:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Invalid JSON response from Capital One API: {response.text}"
+            )
+
+        # Extract customer ID with proper validation
         customer_id = capital_one_response.get('objectCreated', {}).get('_id')
-        
-        if customer_id:
-            user_data = {
-                "customer_id": customer_id,
-                "email": request.email,
-                "frequency": request.frequency,
-                "first_name": request.first_name,
-                "last_name": request.last_name,
-                "address": {
-                    "street_number": request.address.street_number,
-                    "street_name": request.address.street_name,
-                    "city": request.address.city,
-                    "state": request.address.state,
-                    "zip": request.address.zip
-                }
+
+        if not customer_id:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to get customer ID from API response: {capital_one_response}"
+            )
+
+        # Use the formatted address values in the database too
+        user_data = {
+            "customer_id": customer_id,
+            "email": request.email,
+            "frequency": request.frequency,
+            "first_name": request.first_name,
+            "last_name": request.last_name,
+            "address": {
+                "street_number": request.address.street_number,
+                "street_name": request.address.street_name,
+                "city": request.address.city,
+                "state": state,  # Using formatted state
+                "zip": zip_code  # Using formatted zip
             }
-            
-            db.collection("users").document(request.email).set(user_data)
-            #populate_account_with_transactions(customer_id)
-            populate_and_create_all_accounts_with_transactions.fill_accounts_with_data(customer_id)
-            return {
-                "status": "success",
-                "message": "Customer created and data saved to database",
-                "capital_one_response": capital_one_response,
-                "database_data": user_data
-            }
-        else:
-            raise HTTPException(status_code=500, detail="Failed to get customer ID from API response")
+        }
+
+        db.collection("users").document(request.email).set(user_data)
+        populate_and_create_all_accounts_with_transactions.fill_accounts_with_data(customer_id)
+        return {
+            "status": "success",
+            "message": "Customer created and data saved to database",
+            "capital_one_response": capital_one_response,
+            "database_data": user_data
+        }
+
     except requests.exceptions.RequestException as e:
-        raise HTTPException(status_code=500, detail=f"Error calling Capital One API: {str(e)}")
+        error_detail = f"Error calling Capital One API: {str(e)}"
+        print(error_detail)
+        if hasattr(e, 'response') and e.response:
+            error_detail += f" Response: {e.response.text}"
+        raise HTTPException(status_code=500, detail=error_detail)
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error saving to database: {str(e)}")
+        print(f"Unexpected error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
 @app.post("/get_all_user_data/{customer_id}")
 def get_all_user_data(customer_id:str):
