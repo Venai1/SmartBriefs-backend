@@ -635,7 +635,7 @@ def test_all_apis():
     try:
         api_key = os.getenv("RESEND_API_KEY")
         results["resend"] = {
-            "api_key_configured": bool(api_key)
+            "api_key_configured": str(api_key)
         }
     except Exception as e:
         results["resend"] = {"error": str(e)}
@@ -644,7 +644,7 @@ def test_all_apis():
     try:
         results["firebase"] = {
             "client_initialized": db is not None,
-            "service_account_file": os.path.exists("serviceAccountKey.json")
+            "service_account_file": os.path.get("serviceAccountKey.json")
         }
     except Exception as e:
         results["firebase"] = {"error": str(e)}
