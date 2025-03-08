@@ -33,9 +33,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add the diagnostic routes
-api_tests.add_diagnostic_routes(app)
-
 # This adds a root endpoint to prevent 404 errors
 @app.get("/")
 def read_root():
