@@ -611,24 +611,51 @@ def test_all_apis():
     try:
         api_key = os.getenv("OPEN_AI_API_KEY")
         results["openai"] = {
-            "api_key_configured": str(api_key)
+            "api_key_configured": api_key  # We're keeping the full key as requested
         }
     except Exception as e:
         results["openai"] = {"error": str(e)}
     
-    # Test Yahoo Finance
+    # Test Yahoo Finance - Fixed the has_yfinance issue
     try:
-        for ticker in ["AAPL", "^GSPC"]:
-            results[f"yahoo_finance_{ticker}"] = {"test_started": True}
-            if has_yfinance:
-                try:
-                    stock = yf.Ticker(ticker)
-                    hist = stock.history(period="1d")
-                    results[f"yahoo_finance_{ticker}"]["success"] = not hist.empty
-                except Exception as e:
-                    results[f"yahoo_finance_{ticker}"]["error"] = str(e)
-            else:
-                results[f"yahoo_finance_{ticker}"]["error"] = "yfinance not imported"
+        # Check if yfinance is available
+        yf_available = False
+        try:
+            import yfinance as yf
+            yf_available = True
+        except ImportError:
+            yf_available = False
+        
+        # Test AAPL ticker
+        results["yahoo_finance_AAPL"] = {"test_started": True}
+        
+        if yf_available:
+            try:
+                stock = yf.Ticker("AAPL")
+                hist = stock.history(period="1d")
+                results["yahoo_finance_AAPL"]["success"] = not hist.empty
+                if not hist.empty:
+                    results["yahoo_finance_AAPL"]["price"] = hist["Close"].iloc[-1]
+            except Exception as e:
+                results["yahoo_finance_AAPL"]["error"] = str(e)
+        else:
+            results["yahoo_finance_AAPL"]["error"] = "yfinance module not available"
+            
+        # Test S&P 500 ticker
+        results["yahoo_finance_SP500"] = {"test_started": True}
+        
+        if yf_available:
+            try:
+                stock = yf.Ticker("^GSPC")
+                hist = stock.history(period="1d")
+                results["yahoo_finance_SP500"]["success"] = not hist.empty
+                if not hist.empty:
+                    results["yahoo_finance_SP500"]["price"] = hist["Close"].iloc[-1]
+            except Exception as e:
+                results["yahoo_finance_SP500"]["error"] = str(e)
+        else:
+            results["yahoo_finance_SP500"]["error"] = "yfinance module not available"
+        
     except Exception as e:
         results["yahoo_finance"] = {"error": str(e)}
     
@@ -636,17 +663,34 @@ def test_all_apis():
     try:
         api_key = os.getenv("RESEND_API_KEY")
         results["resend"] = {
-            "api_key_configured": str(api_key)
+            "api_key_configured": api_key  # We're keeping the full key as requested
         }
     except Exception as e:
         results["resend"] = {"error": str(e)}
     
-    # Test Firebase
+    # Fix Firebase test - the previous code had an issue with posixpath.get
     try:
+        # Test if we can access the db object
         results["firebase"] = {
-            "client_initialized": db is not None,
-            "service_account_file": os.path.get("serviceAccountKey.json")
+            "client_initialized": False
         }
+        
+        # Check if the db variable is defined and is not None
+        if 'db' in globals() and db is not None:
+            results["firebase"]["client_initialized"] = True
+            
+        # Check if the service account file exists
+        service_account_exists = os.path.exists("serviceAccountKey.json")
+        results["firebase"]["service_account_file"] = service_account_exists
+        
+        # Try to get a collection (without accessing a specific document)
+        if 'db' in globals() and db is not None:
+            try:
+                # Just try to reference a collection (not get/query it)
+                coll_ref = db.collection("_test_collection")
+                results["firebase"]["collection_reference"] = "success"
+            except Exception as e:
+                results["firebase"]["collection_error"] = str(e)
     except Exception as e:
         results["firebase"] = {"error": str(e)}
     
