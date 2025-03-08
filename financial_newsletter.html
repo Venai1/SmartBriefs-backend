@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Newsletter - John2 Doe</title>
+    <style>
+        body {
+            font-family: 'Merriweather', Georgia, serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #2ca05a;
+            margin-bottom: 5px;
+            font-size: 36px;
+        }
+        .header p {
+            color: #666;
+            font-size: 18px;
+            margin-top: 0;
+        }
+        .summary-box {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 18px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .summary-box h2 {
+            margin-top: 0;
+            color: #2ca05a;
+        }
+        .financial-overview {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 30px;
+        }
+        .networth-card {
+            padding: 25px;
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .networth-card h3 {
+            margin-top: 0;
+            color: #2ca05a;
+            font-size: 20px;
+        }
+        .networth-card .amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+        .other-finances {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .financial-card {
+            padding: 20px;
+            margin-bottom: 20px;
+            flex: 1;
+            min-width: 200px;
+            margin-right: 15px;
+            text-align: center;
+        }
+        .financial-card:last-child {
+            margin-right: 0;
+        }
+        .financial-card h3 {
+            margin-top: 0;
+            color: #2ca05a;
+            font-size: 18px;
+        }
+        .financial-card .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #2ca05a;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .market-overview {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .market-card {
+            padding: 15px;
+            margin-bottom: 15px;
+            flex: 1;
+            min-width: 200px;
+            margin-right: 15px;
+            text-align: center;
+        }
+        .market-card:last-child {
+            margin-right: 0;
+        }
+        .market-card h3 {
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .market-card .price {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .up {
+            color: #28a745;
+        }
+        .down {
+            color: #dc3545;
+        }
+        .accounts-table, .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .accounts-table th, .accounts-table td,
+        .transactions-table th, .transactions-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .accounts-table th, .transactions-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        .accounts-table tr:last-child td,
+        .transactions-table tr:last-child td {
+            border-bottom: none;
+        }
+        .news-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .news-section h2 {
+            color: #2ca05a;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        .news-summary {
+            margin-bottom: 20px;
+        }
+        .news-articles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .news-item {
+            background-color: #f5f5f5;
+            border-radius: 6px;
+            padding: 10px;
+            flex: 1 1 calc(50% - 15px);
+            min-width: 250px;
+        }
+        .news-item h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .news-item p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        .news-item a {
+            color: #2ca05a;
+            text-decoration: none;
+        }
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+        .date {
+            color: #888;
+            font-size: 12px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Financial Insights</h1>
+        <p>Your personal financial newsletter - March 07, 2025</p>
+    </div>
+
+    <div class="summary-box">
+        <h2>Summary</h2>
+        <p>🚀 Hey John2 Doe, your financial journey is taking off! With a decreasing spending trend and a solid recent deposit of $8,444.45, you're making strides towards balancing the books. Remember, every transaction counts - keep up the savvy spending to reach your financial goals! ✨</p>
+    </div>
+
+    <div class="section">
+        <h2>Financial Overview</h2>
+        <div class="financial-overview">
+            <div class="networth-card">
+                <h3>Net Worth</h3>
+                <div class="amount">$-3,008.87</div>
+            </div>
+            <div class="other-finances">
+                <div class="financial-card">
+                    <h3>Money Spent</h3>
+                    <div class="amount">$31,042.54</div>
+                </div>
+                <div class="financial-card">
+                    <h3>Money Added</h3>
+                    <div class="amount">$8,444.45</div>
+                </div>
+                <div class="financial-card">
+                    <h3>Money Owed</h3>
+                    <div class="amount">$69,309.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>The Market</h2>
+        <div class="market-overview">
+            <div class="market-card">
+                <h3>S&P 500</h3>
+                <div class="price down">$5,769.15</div>
+            </div>
+        
+            <div class="market-card">
+                <h3>Dow Jones</h3>
+                <div class="price up">$42,794.26</div>
+            </div>
+        
+            <div class="market-card">
+                <h3>Nasdaq Composite</h3>
+                <div class="price down">$18,193.16</div>
+            </div>
+        
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Account Balances</h2>
+        <table class="accounts-table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Primary</td>
+                    <td>$553.10</td>
+                </tr>
+        
+                <tr>
+                    <td>Emergency Fund</td>
+                    <td>$30,174.40</td>
+                </tr>
+        
+                <tr>
+                    <td>Travel</td>
+                    <td>$23,959.00</td>
+                </tr>
+        
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Largest Transactions</h2>
+        <table class="transactions-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>2025-02-27</td>
+                    <td>Transportation</td>
+                    <td>$964.71</td>
+                </tr>
+        
+                <tr>
+                    <td>2</td>
+                    <td>2025-02-06</td>
+                    <td>Electronics</td>
+                    <td>$952.24</td>
+                </tr>
+        
+                <tr>
+                    <td>3</td>
+                    <td>2025-02-11</td>
+                    <td>Grocery shopping</td>
+                    <td>$947.98</td>
+                </tr>
+        
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Largest Deposits</h2>
+        <table class="transactions-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>2025-02-18</td>
+                    <td>Salary deposit</td>
+                    <td>$3,124.17</td>
+                </tr>
+        
+                <tr>
+                    <td>2</td>
+                    <td>2025-02-23</td>
+                    <td>Refund</td>
+                    <td>$2,399.11</td>
+                </tr>
+        
+                <tr>
+                    <td>3</td>
+                    <td>2025-02-25</td>
+                    <td>Salary deposit</td>
+                    <td>$2,176.40</td>
+                </tr>
+        
+            </tbody>
+        </table>
+    </div>
+
+    <div class="news-section">
+        <h2>Financial News</h2>
+        <div class="news-summary">
+            <p>Finance executives are adapting to shifting tariff policies for stability, USMCA compliant goods from Canada are now safe from Trump's tariffs, and Thailand's TCG is allotting funds for an SME pickup scheme. The impact of tariffs and government support programs on international trade and small businesses are key focal points in today's financial news.</p>
+        </div>
+        <div class="news-articles">
+            <div class="news-item">
+                <h3><a href="https://biztoc.com/x/5fdc8f79f11db8ff" target="_blank">Finance Executives Seek Stability Amid Erratic Tariff Shifts</a></h3>
+                <p class="date">Biztoc.com · March 07, 2025</p>
+            </div>
+        
+            <div class="news-item">
+                <h3><a href="https://www.blogto.com/city/2025/03/usmca-compliant-goods-trump-tariffs-canada/" target="_blank">USMCA compliant goods now safe from Trump but U.S. tariffs remain on Canada</a></h3>
+                <p class="date">blogTO · March 07, 2025</p>
+            </div>
+        
+            <div class="news-item">
+                <h3><a href="https://www.blogto.com/city/2025/03/usmca-compliant-goods-tariffs-canada/" target="_blank">What it means that U.S. tariffs don't apply to USMCA compliant goods from Canada</a></h3>
+                <p class="date">blogTO · March 07, 2025</p>
+            </div>
+        
+            <div class="news-item">
+                <h3><a href="https://longform.asmartbear.com/scratched-my-own-itch/" target="_blank">“I scratched my own itch” isn’t good enough</a></h3>
+                <p class="date">Asmartbear.com · March 07, 2025</p>
+            </div>
+        
+            <div class="news-item">
+                <h3><a href="https://www.bangkokpost.com/business/general/2974811/tcg-allots-b10bn-for-sme-pickup-scheme" target="_blank">TCG allots B10bn for SME pickup scheme</a></h3>
+                <p class="date">Bangkok Post · March 07, 2025</p>
+            </div>
+        
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Financial Insights Newsletter. All rights reserved.</p>
+    </div>
+</body>
+</html>
+    

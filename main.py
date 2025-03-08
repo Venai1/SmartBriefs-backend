@@ -8,6 +8,7 @@ import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 import pandas as pd
+from pprint import pprint 
 from helperFunctions.create_account_transactions.populate_account_with_transactions import populate_account_with_transactions
 from helperFunctions.generate_open_ai_summary import generate_open_ai_summary
 from helperFunctions.get_bank_data import BankDataManager
@@ -98,7 +99,7 @@ def register_user(request: RegisterRequest):
     }
     
     try:
-        url = f"{os.getenv("NESSIE_API_URL")}/customers?key={os.getenv("NEWS_API_KEY")}"
+        url = f"{os.getenv("NESSIE_API_URL")}/customers?key={os.getenv("NESSIE_API_KEY")}"
         response = requests.post(
             url,
             data=json.dumps(capital_one_data),
@@ -142,9 +143,9 @@ def register_user(request: RegisterRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saving to database: {str(e)}")
 
-@app.post("/get_all_user_data/{customer_id}}")
+@app.post("/get_all_user_data/{customer_id}")
 def get_all_user_data(customer_id:str):
-    bank_manager = BankDataManager(os.getenv("NESSIE_API_URL"), os.getenv("NEWS_API_KEY"))
+    bank_manager = BankDataManager(os.getenv("NESSIE_API_URL"), os.getenv("NESSIE_API_KEY"))
     timestamp = "30d"
     bank_manager.fetch_customer_data(customer_id)
 
@@ -264,7 +265,7 @@ def get_all_user_data(customer_id:str):
 
         summary_prompt = (
             f"Create a friendly, personalized financial headline for a newsletter addressed directly to {result['name']}. "
-            f"Reference their current financial situation (net worth: ${result['networth']:.2f}, recent spending: ${result['money_spent']:.2f}, "
+            f"Reference their current financial situation (net worth: ${result['net_worth']:.2f}, recent spending: ${result['money_spent']:.2f}, "
             f"deposits: ${result['money_added']:.2f}{' in the specified time period' if timestamp else ''}, debt: ${result['money_owed']:.2f}) "
             f"but focus on insights rather than just numbers. Use 'you' instead of 'they'. Keep it to 2-3 engaging sentences."
         )
@@ -281,7 +282,7 @@ def get_all_user_data(customer_id:str):
         result["accounts_summary"] = generate_open_ai_summary(summary_prompt)
     except Exception as e:
         result["accounts_summary"] = (
-            f"{result['name']} has a net worth of ${result['networth']:.2f} with ${result['money_owed']:.2f} in debt. "
+            f"{result['name']} has a net worth of ${result['net_worth']:.2f} with ${result['money_owed']:.2f} in debt. "
             f"Recently {'spent' if result['money_spent'] > result['money_added'] else 'saved'} more than "
             f"{'earned' if result['money_spent'] > result['money_added'] else 'spent'}."
         )
@@ -293,4 +294,5 @@ def get_all_user_data(customer_id:str):
     result["news_ai_summary"] = news_data["summary"]
     result["news_articles"] = news_data["articles"]
 
+    pprint(result)
     return result

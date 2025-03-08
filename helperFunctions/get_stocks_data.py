@@ -16,6 +16,6 @@ def get_stocks_data(tickers):
 
         return {
             "ticker": ticker,
-            "price": round(latest_price, 2),
+            "price": int(latest_price),
             "status": status,
         }
