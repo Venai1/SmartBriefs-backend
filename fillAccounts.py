@@ -6,10 +6,8 @@ import time
 from datetime import datetime, timedelta
 from faker import Faker
 
-# Initialize Faker
 fake = Faker()
 
-# API Constants
 API_URL = "http://api.nessieisreal.com"
 API_KEY = "9699a5b7260039b6a8fac75cf9dae5d0"
 

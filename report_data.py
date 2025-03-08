@@ -4,7 +4,11 @@ import numpy as np
 from typing import Dict, Any, List
 from openai import OpenAI # Assuming this is installed for LLM summary
 from datetime import datetime
-import stockInfo
+from stockInfo import getMainStocks
+from newsArticles import get_news_summary
+import json
+from datetime import datetime
+import numpy as np
 
 def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dict[str, Any]:
     """
@@ -59,7 +63,6 @@ def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dic
             )
             if timestamp.endswith('d'):
                 days = int(timestamp[:-1])
-                from datetime import datetime
                 cutoff_date = datetime.now() - pd.Timedelta(days=days)
                 transactions = transactions[transactions['transaction_date'] >= cutoff_date]
         
@@ -188,10 +191,9 @@ def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dic
                 }
             ]
         )
-        result["summary"] = response.choices[0].message.content.strip()
+        result["accounts_summary"] = response.choices[0].message.content.strip()
     except Exception as e:
-        # Fallback summary if LLM call fails
-        result["summary"] = (
+        result["accounts_summary"] = (
             f"{result['name']} has a net worth of ${result['networth']:.2f} with ${result['money_owed']:.2f} in debt. "
             f"Recently {'spent' if result['money_spent'] > result['money_added'] else 'saved'} more than "
             f"{'earned' if result['money_spent'] > result['money_added'] else 'spent'}."
@@ -201,9 +203,7 @@ def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dic
 
 def save_to_json(data, filename="customer_summary.json"):
     """Save data dictionary to a JSON file"""
-    import json
-    from datetime import datetime
-    import numpy as np
+
     
     # Handle datetime objects, NumPy types, and other non-serializable types
     def json_serial(obj):
@@ -250,17 +250,18 @@ def save_to_json(data, filename="customer_summary.json"):
 # Example usage
 if __name__ == "__main__":
     customer_id = "67cb640c9683f20dd518d16f"
-    time_period = "30d"  # Last 30 days
+    time_period = "30d"
     
     summary = get_customer_banking_summary(customer_id, time_period)
-    summary["stocks"] = stockInfo.getMainStocks()
-
-    # Save the summary to a JSON file
+    news_data = get_news_summary()
+    summary["stocks"] = getMainStocks()
+    summary["news_ai_summary"] = news_data["summary"]
+    summary["news_articles"] = news_data["articles"]
     save_to_json(summary)
     
     # Print key information
     print(f"Customer: {summary['name']}")
-    print(f"Summary: {summary['summary']}")
+    print(f"Summary: {summary['accounts_summary']}")
     print(f"Net Worth: ${summary['networth']:.2f}")
     print(f"Total Debt: ${summary['money_owed']:.2f}")
     print(f"Money Spent: ${summary['money_spent']:.2f}")

@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 def get_stock_price(ticker):
     stock = yf.Ticker(ticker)
 
-    # Get historical prices for the last 2 days
     hist = stock.history(period="2d", interval="1h")
     
     if hist.empty:
@@ -24,7 +23,7 @@ def get_stock_price(ticker):
 
 
 def getMainStocks():
-    tickers = ["^GSPC", "^DJI", "^IXIC"]  # S&P 500, Dow Jones, Nasdaq
+    tickers = ["^GSPC", "^DJI", "^IXIC"]
     results = []
 
     for ticker in tickers:
