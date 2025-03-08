@@ -16,9 +16,6 @@ from helperFunctions.create_account_transactions import populate_and_create_all_
 import generate_newsletter
 from starlette.middleware.cors import CORSMiddleware
 import send_email
-# Add this to the import section of your main.py
-from api_tests import add_diagnostic_routes
-
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
@@ -37,7 +34,7 @@ app.add_middleware(
 )
 
 # Add the diagnostic routes
-add_diagnostic_routes(app)
+api_tests.add_diagnostic_routes(app)
 
 # This adds a root endpoint to prevent 404 errors
 @app.get("/")
@@ -562,23 +559,97 @@ def send_monthly_newsletters():
         print(error_detail)
         raise HTTPException(status_code=500, detail=error_detail)
 
-    
-import requests
-
-@app.get("/network-test")
+# Add this diagnostic router directly in your main.py after your other endpoint definitions
+@app.get("/test-network")
 def test_network():
+    """Test basic network connectivity"""
     results = {}
-    try:
-        r = requests.get("https://www.google.com", timeout=5)
-        results["google"] = {"status": r.status_code, "success": r.status_code == 200}
-    except Exception as e:
-        results["google"] = {"error": str(e), "success": False}
-        
-    try:
-        r = requests.get("https://api.openai.com/v1/engines", timeout=5)
-        results["openai"] = {"status": r.status_code, "success": r.status_code != 200 and r.status_code < 500}
-    except Exception as e:
-        results["openai"] = {"error": str(e), "success": False}
     
-    # Add other API endpoints to test
+    # Test some common websites
+    sites = [
+        {"name": "Google", "url": "https://www.google.com"},
+        {"name": "OpenAI", "url": "https://api.openai.com"}
+    ]
+    
+    for site in sites:
+        try:
+            start_time = time.time()
+            response = requests.get(site["url"], timeout=5)
+            elapsed = time.time() - start_time
+            results[site["name"]] = {
+                "status": response.status_code,
+                "success": response.status_code == 200,
+                "time_ms": round(elapsed * 1000, 2)
+            }
+        except Exception as e:
+            results[site["name"]] = {
+                "success": False,
+                "error": str(e)
+            }
+    
+    # Test DNS resolution
+    domains = ["api.openai.com", "query1.finance.yahoo.com"]
+    for domain in domains:
+        try:
+            ip = socket.gethostbyname(domain)
+            results[f"DNS {domain}"] = {
+                "success": True,
+                "ip": ip
+            }
+        except Exception as e:
+            results[f"DNS {domain}"] = {
+                "success": False,
+                "error": str(e)
+            }
+    
+    return results
+
+@app.get("/test-all-apis")
+def test_all_apis():
+    """Test all external APIs"""
+    results = {}
+    
+    # Test OpenAI
+    try:
+        api_key = os.getenv("OPEN_AI_API_KEY")
+        results["openai"] = {
+            "api_key_configured": str(api_key)
+        }
+    except Exception as e:
+        results["openai"] = {"error": str(e)}
+    
+    # Test Yahoo Finance
+    try:
+        for ticker in ["AAPL", "^GSPC"]:
+            results[f"yahoo_finance_{ticker}"] = {"test_started": True}
+            if has_yfinance:
+                try:
+                    stock = yf.Ticker(ticker)
+                    hist = stock.history(period="1d")
+                    results[f"yahoo_finance_{ticker}"]["success"] = not hist.empty
+                except Exception as e:
+                    results[f"yahoo_finance_{ticker}"]["error"] = str(e)
+            else:
+                results[f"yahoo_finance_{ticker}"]["error"] = "yfinance not imported"
+    except Exception as e:
+        results["yahoo_finance"] = {"error": str(e)}
+    
+    # Test Resend
+    try:
+        api_key = os.getenv("RESEND_API_KEY")
+        results["resend"] = {
+            "api_key_configured": bool(api_key)
+        }
+    except Exception as e:
+        results["resend"] = {"error": str(e)}
+    
+    # Test Firebase
+    try:
+        results["firebase"] = {
+            "client_initialized": db is not None,
+            "service_account_file": os.path.exists("serviceAccountKey.json")
+        }
+    except Exception as e:
+        results["firebase"] = {"error": str(e)}
+    
     return results
