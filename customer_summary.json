@@ -2,7 +2,7 @@
     "first_name": "John2",
     "last_name": "Doe",
     "name": "John2 Doe",
-    "networth": 84271.0,
+    "net_worth": 84271.0,
     "money_owed": 11254,
     "money_spent": 3890.88,
     "money_added": 15874.09,
@@ -50,23 +50,55 @@
         "Emergency Fund": 53583.19,
         "Daily Expenses": 41941.81
     },
-    "accounts_summary": "\ud83c\udf1f Stay in the loop, John! Your finances are on the upswing with a healthy net worth of $84,271. Dive into your recent spending on Entertainment, Electronics, and Dining, as your financial habits evolve. Keep up the good work and let's explore strategies to make your money work harder for you! \ud83d\udcb8\u2728",
+    "accounts_summary": "Hey John2 Doe, your financial journey is impressive! You've been mindful with your spending habits, but let's explore ways to optimize. Planning a budget for your top spending categories like Entertainment and Electronics could help you achieve your financial goals even faster. Keep up the great work!",
     "stocks": [
         {
             "ticker": "^GSPC",
-            "price": 5769.15,
+            "price": 5769,
             "status": "Down"
         },
         {
             "ticker": "^DJI",
-            "price": 42794.26,
+            "price": 42794,
             "status": "Up"
         },
         {
             "ticker": "^IXIC",
-            "price": 18193.16,
+            "price": 18193,
             "status": "Down"
         }
     ],
-    "news_report": "Today's financial news highlights include a focus on funding for small and medium enterprises with TCG allotting B10bn for a pickup scheme and credit guarantees. Additionally, there is a call for firms to be allowed to validate foreign exchange claims, showing a push for transparency in financial transactions."
+    "news_ai_summary": "Today, market volatility is driven by President Trump's accusations against 'globalists' for the stock market dive and his creation of a Strategic Bitcoin Reserve ahead of a White House crypto summit. Additionally, Fund manager's comments on Marvell stock and the upcoming crypto summit are attracting attention from investors and the financial community.",
+    "news_articles": [
+        {
+            "title": "Dow Jones Futures: Trump Blames 'Globalists' For Market Dive; Palantir Plunges As Broadcom Jumps Late - Investor's Business Daily",
+            "source": "Investor's Business Daily",
+            "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-trump-blames-globalists-nvidia-tesla-palantir-broadcom-jobs-report/",
+            "published_at": "2025-03-07T03:56:00Z"
+        },
+        {
+            "title": "Trump creates a Strategic Bitcoin Reserve one day ahead of White House crypto summit - CNN",
+            "source": "CNN",
+            "url": "https://www.cnn.com/2025/03/06/business/strategic-bitcoin-reserve-trump/index.html",
+            "published_at": "2025-03-07T03:22:30Z"
+        },
+        {
+            "title": "Fund manager\u2019s bold words on Marvell stock turn heads - TheStreet",
+            "source": "TheStreet",
+            "url": "https://www.thestreet.com/investing/fund-managers-bold-words-on-marvell-stock-turn-heads",
+            "published_at": "2025-03-07T00:33:00Z"
+        },
+        {
+            "title": "Trump blames \u2018globalists\u2019 for stock market sell-off - CNBC",
+            "source": "CNBC",
+            "url": "https://www.cnbc.com/2025/03/06/trump-blames-globalists-for-stock-market-sell-off.html",
+            "published_at": "2025-03-06T23:07:31Z"
+        },
+        {
+            "title": "Trump To Hold Crypto Summit Friday\u2014What You Need To Know - Investopedia",
+            "source": "Investopedia",
+            "url": "https://www.investopedia.com/trump-to-hold-crypto-summit-friday-what-you-need-to-know-11692575",
+            "published_at": "2025-03-06T22:57:03Z"
+        }
+    ]
 }

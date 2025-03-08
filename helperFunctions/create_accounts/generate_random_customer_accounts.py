@@ -1,5 +1,5 @@
 import time
-from random import random
+import random
 
 from helperFunctions.create_account_transactions.populate_account_with_transactions import \
     populate_account_with_transactions

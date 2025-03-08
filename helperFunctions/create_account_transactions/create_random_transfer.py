@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime, timedelta
-from random import random
+import random
 import requests
 from dotenv import load_dotenv
 

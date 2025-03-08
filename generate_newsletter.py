@@ -1,6 +1,5 @@
 from datetime import datetime
 import report_data
-
 def generate_newsletter(data):
     """
     Generate an HTML financial newsletter from the provided data dictionary.
@@ -238,7 +237,7 @@ def generate_newsletter(data):
         <div class="financial-overview">
             <div class="networth-card">
                 <h3>Net Worth</h3>
-                <div class="amount">""" + format_currency(data['networth']) + """</div>
+                <div class="amount">""" + format_currency(data['net_worth']) + """</div>
             </div>
             <div class="other-finances">
                 <div class="financial-card">
@@ -402,7 +401,7 @@ if __name__ == "__main__":
     import json
     
     # Load the JSON data (for demonstration purposes)
-    customer_id = "67cb8ab19683f20dd518d2a2"
+    customer_id = "67cbd8d99683f20dd518d75e"
     customer_data = report_data.get_report_data(customer_id, "30d")
     
     # Generate newsletter

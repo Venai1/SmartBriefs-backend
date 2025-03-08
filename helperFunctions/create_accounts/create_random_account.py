@@ -40,6 +40,7 @@ def create_random_account(customer_id):
         )
 
         response.raise_for_status()
+        print(response)
         return response.json()
     except requests.exceptions.RequestException as e:
         print(f"Error creating account: {str(e)}")
