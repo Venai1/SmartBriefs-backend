@@ -1,23 +1,13 @@
-FROM python:3.9-alpine
+FROM python:3.9-slim
 
 WORKDIR /app
 
-# Enhanced system dependencies including what's needed for pyarrow
-RUN apk add --no-cache \
-    gcc \
-    musl-dev \
-    python3-dev \
-    libffi-dev \
-    openssl-dev \
-    make \
-    g++ \
-    # Add these for pyarrow
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
     cmake \
-    ninja \
-    flex \
-    bison \
-    boost-dev \
-    zlib-dev
+    libboost-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements file
 COPY requirements.txt .
