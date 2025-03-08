@@ -3,6 +3,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import yfinance as yf
 import requests
 import json
 import firebase_admin
