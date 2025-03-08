@@ -3,15 +3,16 @@ Email sender module for financial newsletters with Firebase integration
 """
 import os
 import resend
+from dotenv import load_dotenv
 from datetime import datetime
 import report_data
 from generate_newsletter import generate_newsletter
 from firebase_admin import firestore
 import numpy as np
 
-# Get API key from environment or set directly
-#RESEND_API_KEY = os.environ["RESEND_API_KEY"]
-RESEND_API_KEY = "re_7ZbDEmYy_Dizg5KJPsMc76zxfGegSBGrs"
+
+load_dotenv()
+RESEND_API_KEY = os.environ["RESEND_API_KEY"]
 
 def convert_numpy_types(obj):
     """Convert numpy types to Python native types recursively in dictionaries and lists."""
@@ -146,10 +147,13 @@ def send_financial_newsletter(customer_id, date_range, recipient_email):
         raise
 
 if __name__ == "__main__":
+
+    ## CALLING THIS ONLY HELPS WITH TESTING EMAIL DOES NOT UPDATE DATABASe
     # Example usage
     customer_id = "67cc82d19683f20dd518da03"  # Example customer ID
     date_range = "30d"  # Last 30 days
     test_email = "venai.seepersaud@gmail.com"  # Test email address
+    
     
     # Send newsletter to a single customer
     print("Sending newsletter to a single customer...")
