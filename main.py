@@ -17,8 +17,23 @@ import generate_newsletter
 from starlette.middleware.cors import CORSMiddleware
 import send_email
 
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
+# Modified Firebase initialization for Vercel compatibility
+try:
+    # First, try to use a service account file if it exists (local development)
+    if os.path.exists("serviceAccountKey.json"):
+        cred = credentials.Certificate("serviceAccountKey.json")
+        firebase_admin.initialize_app(cred)
+    # If no file, try to use environment variables (Vercel deployment)
+    elif os.environ.get("FIREBASE_SERVICE_ACCOUNT"):
+        service_account_info = json.loads(os.environ.get("FIREBASE_SERVICE_ACCOUNT"))
+        cred = credentials.Certificate(service_account_info)
+        firebase_admin.initialize_app(cred)
+    else:
+        print("WARNING: No Firebase credentials found. Database functionality will be unavailable.")
+except Exception as e:
+    print(f"Error initializing Firebase: {str(e)}")
+
+# Initialize Firestore client
 db = firestore.client()
 
 tickers = ["^GSPC", "^DJI", "^IXIC"]
