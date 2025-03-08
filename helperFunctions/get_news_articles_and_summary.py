@@ -41,7 +41,7 @@ def get_news_articles_and_summary():
         )
 
         try:
-            generate_open_ai_summary(summary_prompt)
+            news_summary = generate_open_ai_summary(summary_prompt)
         except Exception as e:
             print(f"Error generating news summary: {e}")
             news_summary = "Unable to generate news summary."

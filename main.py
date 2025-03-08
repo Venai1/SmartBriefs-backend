@@ -8,6 +8,7 @@ import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 import pandas as pd
+import numpy as np
 from pprint import pprint 
 from helperFunctions.create_account_transactions.populate_account_with_transactions import populate_account_with_transactions
 from helperFunctions.generate_open_ai_summary import generate_open_ai_summary
@@ -38,6 +39,27 @@ class RegisterRequest(BaseModel):
     email: str
     frequency: str
 
+def convert_numpy_types(obj):
+    """Convert numpy types to Python native types recursively in dictionaries and lists."""
+    import numpy as np
+    
+    if isinstance(obj, dict):
+        return {key: convert_numpy_types(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_numpy_types(item) for item in obj]
+    elif isinstance(obj, (np.int8, np.int16, np.int32, np.int64,
+                          np.uint8, np.uint16, np.uint32, np.uint64)):
+        return int(obj)
+    elif isinstance(obj, (np.float16, np.float32, np.float64)):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return convert_numpy_types(obj.tolist())
+    elif isinstance(obj, np.bool_):
+        return bool(obj)
+    elif isinstance(obj, np.void):
+        return None
+    else:
+        return obj
 
 @app.post("/register")
 def register_user(request: RegisterRequest):
@@ -294,5 +316,8 @@ def get_all_user_data(customer_id:str):
     result["news_ai_summary"] = news_data["summary"]
     result["news_articles"] = news_data["articles"]
 
-    pprint(result)
+    result = convert_numpy_types(result)
+
     return result
+
+    # Add this function to your code

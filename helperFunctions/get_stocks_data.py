@@ -1,6 +1,7 @@
 import yfinance as yf
 
 def get_stocks_data(tickers):
+    result = []
     for ticker in tickers:
         stock = yf.Ticker(ticker)
 
@@ -13,9 +14,11 @@ def get_stocks_data(tickers):
         yesterday_price = hist["Close"].iloc[0]
 
         status = "Up" if latest_price > yesterday_price else "Down"
-
-        return {
-            "ticker": ticker,
-            "price": int(latest_price),
-            "status": status,
-        }
+        
+        result.append({
+        "ticker": ticker,
+        "price": int(latest_price),
+        "status": status,
+        })
+        
+    return  result
