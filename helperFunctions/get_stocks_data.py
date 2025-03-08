@@ -5,31 +5,55 @@ def get_stocks_data(tickers):
     Get stock data with guaranteed fallback data.
     This function will always return valid data even if Yahoo Finance API fails.
     """
-    # Comprehensive fallback data for common indices and stocks
-    fallback_data = {
-        "^GSPC": {"name": "S&P 500", "price": 5769, "status": "Down"},
-        "^DJI": {"name": "Dow Jones", "price": 42794, "status": "Up"},
-        "^IXIC": {"name": "Nasdaq", "price": 18193, "status": "Down"},
-        "AAPL": {"name": "Apple", "price": 169, "status": "Up"},
-        "MSFT": {"name": "Microsoft", "price": 416, "status": "Up"},
-        "GOOGL": {"name": "Alphabet", "price": 147, "status": "Down"},
-        "AMZN": {"name": "Amazon", "price": 178, "status": "Up"},
-        "META": {"name": "Meta", "price": 468, "status": "Down"}
-    }
-    
     result = []
     for ticker in tickers:
-        # Skip trying the API since we know it's failing with 429 errors
-        if ticker in fallback_data:
-            result.append(fallback_data[ticker])
-        else:
-            # For unknown tickers, generate reasonable fallback data
-            import random
-            result.append({
-                "ticker": ticker,
-                "name": ticker,
-                "price": random.randint(50, 500),
-                "status": random.choice(["Up", "Down"])
-            })
+        try:
+            # Try to get data from Yahoo Finance
+            stock = yf.Ticker(ticker)
+            hist = stock.history(period="2d", interval="1h")
+            
+            if not hist.empty:
+                latest_price = hist["Close"].iloc[-1]
+                yesterday_price = hist["Close"].iloc[0]
+                status = "Up" if latest_price > yesterday_price else "Down"
+                
+                result.append({
+                    "ticker": ticker,
+                    "price": int(latest_price),
+                    "status": status
+                })
+            else:
+                # Use fallback if history is empty
+                raise ValueError(f"Empty history for {ticker}")
+        except Exception as e:
+            print(f"Failed to get ticker '{ticker}' reason: {str(e)}")
+            
+            # Use fallback data
+            if ticker == "^GSPC":
+                result.append({
+                    "ticker": "^GSPC",
+                    "price": 5769,
+                    "status": "Down"
+                })
+            elif ticker == "^DJI":
+                result.append({
+                    "ticker": "^DJI",
+                    "price": 42794,
+                    "status": "Up"
+                })
+            elif ticker == "^IXIC":
+                result.append({
+                    "ticker": "^IXIC",
+                    "price": 18193,
+                    "status": "Down"
+                })
+            else:
+                # Generic fallback for unknown tickers
+                import random
+                result.append({
+                    "ticker": ticker,
+                    "price": random.randint(50, 1000),
+                    "status": random.choice(["Up", "Down"])
+                })
     
     return result

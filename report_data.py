@@ -179,8 +179,8 @@ def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dic
             summary_prompt += f"Their largest recent transaction was ${abs(largest_transactions[0]['amount']):.2f} for {largest_transactions[0]['description']}. "
         
         # Replace this with your actual OpenAI API key
-        client = OpenAI(api_key="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")
-
+        client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
+        
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -254,7 +254,7 @@ def get_report_data(customer_id,time_period):
     summary["stocks"] = get_stocks_data(tickers)
     summary["news_ai_summary"] = news_data["summary"]
     summary["news_articles"] = news_data["articles"]
-    
+
     return summary
 
 
