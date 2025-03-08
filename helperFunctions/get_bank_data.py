@@ -1,9 +1,8 @@
 import requests
 import pandas as pd
-import numpy as np
 from datetime import datetime
 import json
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict
 
 class BankDataManager:
     """Class to manage banking data retrieval and organization"""
@@ -20,7 +19,7 @@ class BankDataManager:
         # Data storage
         self.customers_df = None
         self.accounts_df = None
-        self.transactions_df = None  # Will hold deposits, withdrawals, transfers, purchases
+        self.transactions_df = None
         self.merchants_df = None
         self.loans_df = None
         
