@@ -224,6 +224,8 @@ def register_user(request: RegisterRequest):
 
         db.collection("users").document(request.email).set(user_data)
         populate_and_create_all_accounts_with_transactions.fill_accounts_with_data(customer_id)
+
+        # 
         return {
             "status": "success",
             "message": "Customer created and data saved to database",
