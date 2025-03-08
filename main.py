@@ -695,3 +695,77 @@ def test_all_apis():
         results["firebase"] = {"error": str(e)}
     
     return results
+
+
+@app.get("/test-yahoo-detailed")
+def test_yahoo_detailed():
+    """Detailed Yahoo Finance testing with error info"""
+    results = {}
+    
+    try:
+        import yfinance as yf
+        results["import_success"] = True
+    except ImportError as e:
+        results["import_success"] = False
+        results["import_error"] = str(e)
+        return results
+    
+    # Test network connection to Yahoo
+    try:
+        response = requests.get("https://finance.yahoo.com", timeout=5)
+        results["network_test"] = {
+            "success": response.status_code == 200,
+            "status_code": response.status_code
+        }
+    except Exception as e:
+        results["network_test"] = {
+            "success": False,
+            "error": str(e)
+        }
+    
+    # Try with simplified parameters
+    ticker = "AAPL"
+    results[ticker] = {}
+    
+    try:
+        # Step 1: Create ticker object
+        tick = yf.Ticker(ticker)
+        results[ticker]["ticker_created"] = True
+        
+        # Step 2: Try a basic request for info
+        tick_info = tick.info
+        results[ticker]["info_success"] = bool(tick_info)
+        
+        # Step 3: Try a simple history call with minimal parameters
+        hist = tick.history(period="1d")
+        results[ticker]["history_success"] = not hist.empty
+        results[ticker]["rows"] = len(hist)
+        
+        if not hist.empty:
+            results[ticker]["columns"] = hist.columns.tolist()
+            results[ticker]["first_row"] = hist.iloc[0].to_dict()
+    except Exception as e:
+        import traceback
+        results[ticker]["error"] = str(e)
+        results[ticker]["traceback"] = traceback.format_exc()
+    
+    # Try alternative data source for S&P 500
+    try:
+        results["alternative"] = {"started": True}
+        # Use a direct API call instead of yfinance
+        url = "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC"
+        response = requests.get(url, timeout=10)
+        results["alternative"]["status_code"] = response.status_code
+        
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                results["alternative"]["json_parsed"] = True
+                results["alternative"]["data_available"] = bool(data.get("chart", {}).get("result"))
+            except Exception as e:
+                results["alternative"]["json_error"] = str(e)
+        
+    except Exception as e:
+        results["alternative"]["error"] = str(e)
+    
+    return results
