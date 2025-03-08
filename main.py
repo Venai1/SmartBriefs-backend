@@ -69,6 +69,19 @@ def convert_numpy_types(obj):
     else:
         return obj
 
+@app.get("/hello")
+def hello_world():
+    """
+    A simple endpoint to test if the API is working properly.
+    Returns a friendly greeting with timestamp.
+    """
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return {
+        "message": "Hello, World! Your API is working correctly!",
+        "timestamp": current_time,
+        "status": "success"
+    }
+    
 @app.post("/register")
 def register_user(request: RegisterRequest):
     user_ref = db.collection("users").document(request.email)
