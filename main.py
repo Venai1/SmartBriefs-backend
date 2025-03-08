@@ -15,7 +15,7 @@ from helperFunctions.get_stocks_data import get_stocks_data
 from helperFunctions.create_account_transactions import populate_and_create_all_accounts_with_transactions
 import generate_newsletter
 from starlette.middleware.cors import CORSMiddleware
-
+import send_email
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
@@ -225,7 +225,13 @@ def register_user(request: RegisterRequest):
         db.collection("users").document(request.email).set(user_data)
         populate_and_create_all_accounts_with_transactions.fill_accounts_with_data(customer_id)
 
-        # 
+                # Send the email newsletter
+        date_range = "30d"  # Default to 30 days - adjust as needed based on your requirements
+        send_email.send_financial_newsletter(
+            customer_id=user_data["customer_id"], 
+            date_range=date_range, 
+            recipient_email=user_data["email"]
+        )
         return {
             "status": "success",
             "message": "Customer created and data saved to database",
@@ -401,3 +407,134 @@ def get_all_user_data(customer_id:str):
     generate_newsletter.generate_newsletter(result)
 
     return result
+
+# Add this endpoint to your main.py file
+
+@app.get("/cron/send_weekly_newsletters")
+def send_weekly_newsletters():
+    """
+    Endpoint to be called by a cron job to send newsletters to all users
+    with frequency set to "weekly".
+    
+    Returns:
+        dict: Summary of the operation results
+    """
+    try:
+        # Query Firestore for users with frequency="weekly"
+        users_ref = db.collection("users")
+        weekly_users_query = users_ref.where("frequency", "==", "weekly")
+        weekly_users = weekly_users_query.get()
+        
+        results = {
+            "total_users": 0,
+            "successful": 0,
+            "failed": 0,
+            "errors": []
+        }
+        
+        # Iterate through weekly users
+        for user_doc in weekly_users:
+            user_data = user_doc.to_dict()
+            results["total_users"] += 1
+            
+            # Check if user has required fields
+            if not user_data.get("email") or not user_data.get("customer_id"):
+                error_msg = f"User {user_doc.id} missing email or customer_id"
+                results["errors"].append(error_msg)
+                results["failed"] += 1
+                continue
+            
+            try:
+                # Send weekly newsletter (7 days data)
+                send_email.send_financial_newsletter(
+                    customer_id=user_data["customer_id"],
+                    date_range="7d",
+                    recipient_email=user_data["email"]
+                )
+                results["successful"] += 1
+            except Exception as e:
+                error_msg = f"Failed to send newsletter to {user_data.get('email')}: {str(e)}"
+                results["errors"].append(error_msg)
+                results["failed"] += 1
+                print(error_msg)
+        
+        # Add timestamp for logging purposes
+        results["timestamp"] = datetime.now().isoformat()
+        
+        # Store the results in Firestore for monitoring
+        try:
+            db.collection("cron_logs").document(f"weekly_newsletter_{datetime.now().strftime('%Y%m%d_%H%M%S')}").set(results)
+        except Exception as e:
+            print(f"Failed to log cron results to Firestore: {str(e)}")
+        
+        return results
+    
+    except Exception as e:
+        error_detail = f"Error processing weekly newsletters: {str(e)}"
+        print(error_detail)
+        raise HTTPException(status_code=500, detail=error_detail)
+
+
+@app.get("/cron/send_monthly_newsletters")
+def send_monthly_newsletters():
+    """
+    Endpoint to be called by a cron job to send newsletters to all users
+    with frequency set to "monthly".
+    
+    Returns:
+        dict: Summary of the operation results
+    """
+    try:
+        # Query Firestore for users with frequency="monthly"
+        users_ref = db.collection("users")
+        monthly_users_query = users_ref.where("frequency", "==", "monthly")
+        monthly_users = monthly_users_query.get()
+        
+        results = {
+            "total_users": 0,
+            "successful": 0,
+            "failed": 0,
+            "errors": []
+        }
+        
+        # Iterate through monthly users
+        for user_doc in monthly_users:
+            user_data = user_doc.to_dict()
+            results["total_users"] += 1
+            
+            # Check if user has required fields
+            if not user_data.get("email") or not user_data.get("customer_id"):
+                error_msg = f"User {user_doc.id} missing email or customer_id"
+                results["errors"].append(error_msg)
+                results["failed"] += 1
+                continue
+            
+            try:
+                # Send monthly newsletter (30 days data)
+                send_email.send_financial_newsletter(
+                    customer_id=user_data["customer_id"],
+                    date_range="30d",
+                    recipient_email=user_data["email"]
+                )
+                results["successful"] += 1
+            except Exception as e:
+                error_msg = f"Failed to send newsletter to {user_data.get('email')}: {str(e)}"
+                results["errors"].append(error_msg)
+                results["failed"] += 1
+                print(error_msg)
+        
+        # Add timestamp for logging purposes
+        results["timestamp"] = datetime.now().isoformat()
+        
+        # Store the results in Firestore for monitoring
+        try:
+            db.collection("cron_logs").document(f"monthly_newsletter_{datetime.now().strftime('%Y%m%d_%H%M%S')}").set(results)
+        except Exception as e:
+            print(f"Failed to log cron results to Firestore: {str(e)}")
+        
+        return results
+    
+    except Exception as e:
+        error_detail = f"Error processing monthly newsletters: {str(e)}"
+        print(error_detail)
+        raise HTTPException(status_code=500, detail=error_detail)
