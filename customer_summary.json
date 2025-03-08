@@ -50,7 +50,7 @@
         "Emergency Fund": 53583.19,
         "Daily Expenses": 41941.81
     },
-    "accounts_summary": "Hey John2 Doe, your financial journey is impressive! You've been mindful with your spending habits, but let's explore ways to optimize. Planning a budget for your top spending categories like Entertainment and Electronics could help you achieve your financial goals even faster. Keep up the great work!",
+    "accounts_summary": "John2 Doe has a net worth of $84271.00 with $11254.00 in debt. Recently saved more than spent.",
     "stocks": [
         {
             "ticker": "^GSPC",
@@ -68,37 +68,37 @@
             "status": "Down"
         }
     ],
-    "news_ai_summary": "Today, market volatility is driven by President Trump's accusations against 'globalists' for the stock market dive and his creation of a Strategic Bitcoin Reserve ahead of a White House crypto summit. Additionally, Fund manager's comments on Marvell stock and the upcoming crypto summit are attracting attention from investors and the financial community.",
+    "news_ai_summary": "Today's financial headlines highlight the stock market's resilience after a tough week, with the Dow and S&P managing to trim losses. Additionally, noteworthy developments include Broadcom's stock surge following strong earnings, and Walgreens' transformation into a private-equity project, signaling shifts in the healthcare industry.",
     "news_articles": [
         {
-            "title": "Dow Jones Futures: Trump Blames 'Globalists' For Market Dive; Palantir Plunges As Broadcom Jumps Late - Investor's Business Daily",
-            "source": "Investor's Business Daily",
-            "url": "https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-trump-blames-globalists-nvidia-tesla-palantir-broadcom-jobs-report/",
-            "published_at": "2025-03-07T03:56:00Z"
+            "title": "Stock Market Today: Dow, S&P Trim Losses to End a Tough Week - The Wall Street Journal",
+            "source": "The Wall Street Journal",
+            "url": "https://www.wsj.com/livecoverage/jobs-report-stock-market-today-dow-nasdaq-sp500-03-07-2025",
+            "published_at": "2025-03-07T22:14:00Z"
         },
         {
-            "title": "Trump creates a Strategic Bitcoin Reserve one day ahead of White House crypto summit - CNN",
-            "source": "CNN",
-            "url": "https://www.cnn.com/2025/03/06/business/strategic-bitcoin-reserve-trump/index.html",
-            "published_at": "2025-03-07T03:22:30Z"
+            "title": "Sam Bankman-Fried hints at becoming a Republican - Axios",
+            "source": "Axios",
+            "url": "https://www.axios.com/2025/03/06/sam-bankman-fried-tucker-carlson",
+            "published_at": "2025-03-07T15:41:56Z"
         },
         {
-            "title": "Fund manager\u2019s bold words on Marvell stock turn heads - TheStreet",
-            "source": "TheStreet",
-            "url": "https://www.thestreet.com/investing/fund-managers-bold-words-on-marvell-stock-turn-heads",
-            "published_at": "2025-03-07T00:33:00Z"
+            "title": "Broadcom Stock Soars After Chip Maker Beats Earnings. The AI Trade Isn\u2019t Dead. - Barron's",
+            "source": "Barron's",
+            "url": "https://www.barrons.com/articles/broadcom-avgo-earnings-stock-price-4a06d06f",
+            "published_at": "2025-03-07T15:29:00Z"
         },
         {
-            "title": "Trump blames \u2018globalists\u2019 for stock market sell-off - CNBC",
-            "source": "CNBC",
-            "url": "https://www.cnbc.com/2025/03/06/trump-blames-globalists-for-stock-market-sell-off.html",
-            "published_at": "2025-03-06T23:07:31Z"
+            "title": "Walgreens Goes From $100 Billion Health Giant to Private-Equity Salvage Project - The Wall Street Journal",
+            "source": "The Wall Street Journal",
+            "url": "https://www.wsj.com/business/retail/walgreens-private-equity-sale-rise-fall-42ac5db6",
+            "published_at": "2025-03-07T15:27:00Z"
         },
         {
-            "title": "Trump To Hold Crypto Summit Friday\u2014What You Need To Know - Investopedia",
-            "source": "Investopedia",
-            "url": "https://www.investopedia.com/trump-to-hold-crypto-summit-friday-what-you-need-to-know-11692575",
-            "published_at": "2025-03-06T22:57:03Z"
+            "title": "NAHB Secures Lumber Inclusion in Delay of Mexican and Canadian Tariffs - National Association of Home Builders",
+            "source": "Nahb.org",
+            "url": "https://www.nahb.org/blog/2025/03/canada-mexico-tariffs-delayed-higher-lumber-prices-still-likely",
+            "published_at": "2025-03-07T14:07:22Z"
         }
     ]
 }

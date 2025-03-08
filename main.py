@@ -17,6 +17,7 @@ from helperFunctions.create_account_transactions import populate_and_create_all_
 import generate_newsletter
 from starlette.middleware.cors import CORSMiddleware
 import send_email
+import resend
 
 cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
@@ -557,215 +558,49 @@ def send_monthly_newsletters():
         print(error_detail)
         raise HTTPException(status_code=500, detail=error_detail)
 
-# Add this diagnostic router directly in your main.py after your other endpoint definitions
-@app.get("/test-network")
-def test_network():
-    """Test basic network connectivity"""
-    results = {}
+@app.get("/send_demo_email/{email}")
+async def send_demo_email(email: str):
+    """
+    Endpoint to send a demo financial newsletter email to any email address.
+    Uses the pre-designed newsletter template from financial_newsletter.html.
     
-    # Test some common websites
-    sites = [
-        {"name": "Google", "url": "https://www.google.com"},
-        {"name": "OpenAI", "url": "https://api.openai.com"}
-    ]
+    Parameters:
+    - email: Email address to send the demo newsletter to
     
-    for site in sites:
-        try:
-            start_time = time.time()
-            response = requests.get(site["url"], timeout=5)
-            elapsed = time.time() - start_time
-            results[site["name"]] = {
-                "status": response.status_code,
-                "success": response.status_code == 200,
-                "time_ms": round(elapsed * 1000, 2)
-            }
-        except Exception as e:
-            results[site["name"]] = {
-                "success": False,
-                "error": str(e)
-            }
-    
-    # Test DNS resolution
-    domains = ["api.openai.com", "query1.finance.yahoo.com"]
-    for domain in domains:
-        try:
-            ip = socket.gethostbyname(domain)
-            results[f"DNS {domain}"] = {
-                "success": True,
-                "ip": ip
-            }
-        except Exception as e:
-            results[f"DNS {domain}"] = {
-                "success": False,
-                "error": str(e)
-            }
-    
-    return results
+    Returns:
+    - JSON response with status of the email sending operation
+    """
+    try:
+        # Set Resend API key
+        
+        RESEND_API_KEY = os.getenv('RESEND_API_KEY')
+        # Set Resend API key
+        resend.api_key = RESEND_API_KEY
+        # Read the pre-designed newsletter HTML template
+        with open('financial_newsletter.html', 'r') as file:
+            newsletter_html = file.read()
+        
+        # Construct email subject
+        subject = f"Your Demo Financial Newsletter - {datetime.now().strftime('%b %d, %Y')}"
 
-@app.get("/test-all-apis")
-def test_all_apis():
-    """Test all external APIs"""
-    results = {}
-    
-    # Test OpenAI
-    try:
-        api_key = os.getenv("OPEN_AI_API_KEY")
-        results["openai"] = {
-            "api_key_configured": api_key  # We're keeping the full key as requested
+        # Send email via Resend
+        params = {
+            "from": "SmartBriefs <smartbriefs@newsletter.venai.dev>",
+            "to": [email],
+            "subject": subject,
+            "html": newsletter_html
         }
-    except Exception as e:
-        results["openai"] = {"error": str(e)}
-    
-    # Test Yahoo Finance - Fixed the has_yfinance issue
-    try:
-        # Check if yfinance is available
-        yf_available = False
-        try:
-            import yfinance as yf
-            yf_available = True
-        except ImportError:
-            yf_available = False
-        
-        # Test AAPL ticker
-        results["yahoo_finance_AAPL"] = {"test_started": True}
-        
-        if yf_available:
-            try:
-                stock = yf.Ticker("AAPL")
-                hist = stock.history(period="1d")
-                results["yahoo_finance_AAPL"]["success"] = not hist.empty
-                if not hist.empty:
-                    results["yahoo_finance_AAPL"]["price"] = hist["Close"].iloc[-1]
-            except Exception as e:
-                results["yahoo_finance_AAPL"]["error"] = str(e)
-        else:
-            results["yahoo_finance_AAPL"]["error"] = "yfinance module not available"
-            
-        # Test S&P 500 ticker
-        results["yahoo_finance_SP500"] = {"test_started": True}
-        
-        if yf_available:
-            try:
-                stock = yf.Ticker("^GSPC")
-                hist = stock.history(period="1d")
-                results["yahoo_finance_SP500"]["success"] = not hist.empty
-                if not hist.empty:
-                    results["yahoo_finance_SP500"]["price"] = hist["Close"].iloc[-1]
-            except Exception as e:
-                results["yahoo_finance_SP500"]["error"] = str(e)
-        else:
-            results["yahoo_finance_SP500"]["error"] = "yfinance module not available"
-        
-    except Exception as e:
-        results["yahoo_finance"] = {"error": str(e)}
-    
-    # Test Resend
-    try:
-        api_key = os.getenv("RESEND_API_KEY")
-        results["resend"] = {
-            "api_key_configured": api_key  # We're keeping the full key as requested
-        }
-    except Exception as e:
-        results["resend"] = {"error": str(e)}
-    
-    # Fix Firebase test - the previous code had an issue with posixpath.get
-    try:
-        # Test if we can access the db object
-        results["firebase"] = {
-            "client_initialized": False
-        }
-        
-        # Check if the db variable is defined and is not None
-        if 'db' in globals() and db is not None:
-            results["firebase"]["client_initialized"] = True
-            
-        # Check if the service account file exists
-        service_account_exists = os.path.exists("serviceAccountKey.json")
-        results["firebase"]["service_account_file"] = service_account_exists
-        
-        # Try to get a collection (without accessing a specific document)
-        if 'db' in globals() and db is not None:
-            try:
-                # Just try to reference a collection (not get/query it)
-                coll_ref = db.collection("_test_collection")
-                results["firebase"]["collection_reference"] = "success"
-            except Exception as e:
-                results["firebase"]["collection_error"] = str(e)
-    except Exception as e:
-        results["firebase"] = {"error": str(e)}
-    
-    return results
 
-
-@app.get("/test-yahoo-detailed")
-def test_yahoo_detailed():
-    """Detailed Yahoo Finance testing with error info"""
-    results = {}
-    
-    try:
-        import yfinance as yf
-        results["import_success"] = True
-    except ImportError as e:
-        results["import_success"] = False
-        results["import_error"] = str(e)
-        return results
-    
-    # Test network connection to Yahoo
-    try:
-        response = requests.get("https://finance.yahoo.com", timeout=5)
-        results["network_test"] = {
-            "success": response.status_code == 200,
-            "status_code": response.status_code
+        # Send the email
+        email_response = resend.Emails.send(params)
+        
+        return {
+            "status": "success",
+            "message": f"Demo newsletter sent successfully to {email}",
+            "email_id": email_response.get("id", "")
         }
-    except Exception as e:
-        results["network_test"] = {
-            "success": False,
-            "error": str(e)
-        }
-    
-    # Try with simplified parameters
-    ticker = "AAPL"
-    results[ticker] = {}
-    
-    try:
-        # Step 1: Create ticker object
-        tick = yf.Ticker(ticker)
-        results[ticker]["ticker_created"] = True
-        
-        # Step 2: Try a basic request for info
-        tick_info = tick.info
-        results[ticker]["info_success"] = bool(tick_info)
-        
-        # Step 3: Try a simple history call with minimal parameters
-        hist = tick.history(period="1d")
-        results[ticker]["history_success"] = not hist.empty
-        results[ticker]["rows"] = len(hist)
-        
-        if not hist.empty:
-            results[ticker]["columns"] = hist.columns.tolist()
-            results[ticker]["first_row"] = hist.iloc[0].to_dict()
-    except Exception as e:
-        import traceback
-        results[ticker]["error"] = str(e)
-        results[ticker]["traceback"] = traceback.format_exc()
-    
-    # Try alternative data source for S&P 500
-    try:
-        results["alternative"] = {"started": True}
-        # Use a direct API call instead of yfinance
-        url = "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC"
-        response = requests.get(url, timeout=10)
-        results["alternative"]["status_code"] = response.status_code
-        
-        if response.status_code == 200:
-            try:
-                data = response.json()
-                results["alternative"]["json_parsed"] = True
-                results["alternative"]["data_available"] = bool(data.get("chart", {}).get("result"))
-            except Exception as e:
-                results["alternative"]["json_error"] = str(e)
         
     except Exception as e:
-        results["alternative"]["error"] = str(e)
-    
-    return results
+        error_detail = f"Error sending demo newsletter: {str(e)}"
+        print(error_detail)
+        raise HTTPException(status_code=500, detail=error_detail)
