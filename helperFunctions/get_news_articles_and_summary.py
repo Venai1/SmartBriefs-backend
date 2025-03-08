@@ -11,7 +11,7 @@ def get_news_articles_and_summary():
     url = (f'https://newsapi.org/v2/top-headlines?'
            f'country=us&'
            f'category=business&'
-           f'apiKey={os.getenv("NEWS_API_KEY")}')
+           f'apiKey={os.getenv('NEWS_API_KEY')}')
     
     response = requests.get(url)
     articles = []

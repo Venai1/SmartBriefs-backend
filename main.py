@@ -538,3 +538,24 @@ def send_monthly_newsletters():
         error_detail = f"Error processing monthly newsletters: {str(e)}"
         print(error_detail)
         raise HTTPException(status_code=500, detail=error_detail)
+
+    
+import requests
+
+@app.get("/network-test")
+def test_network():
+    results = {}
+    try:
+        r = requests.get("https://www.google.com", timeout=5)
+        results["google"] = {"status": r.status_code, "success": r.status_code == 200}
+    except Exception as e:
+        results["google"] = {"error": str(e), "success": False}
+        
+    try:
+        r = requests.get("https://api.openai.com/v1/engines", timeout=5)
+        results["openai"] = {"status": r.status_code, "success": r.status_code != 200 and r.status_code < 500}
+    except Exception as e:
+        results["openai"] = {"error": str(e), "success": False}
+    
+    # Add other API endpoints to test
+    return results
