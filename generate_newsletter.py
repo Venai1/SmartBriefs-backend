@@ -47,7 +47,7 @@ def generate_newsletter(data):
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 5px; margin-bottom: 20px;">
                     <tr>
                         <td align="center" style="padding: 30px 20px; border-bottom: 1px solid #e0e0e0;">
-                            <h1 style="color: #2ca05a; margin-bottom: 5px; font-size: 28px;">Financial Insights</h1>
+                            <h1 style="color: #2ca05a; margin-bottom: 5px; font-size: 28px;">{Penny}</h1>
                             <p style="color: #666666; font-size: 16px; margin-top: 5px;">Your personal financial newsletter - """ + datetime.now().strftime('%B %d, %Y') + """</p>
                         </td>
                     </tr>
@@ -355,7 +355,7 @@ def generate_newsletter(data):
                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                         <td align="center" style="padding: 20px; color: #888888; font-size: 12px; border-top: 1px solid #e0e0e0;">
-                            <p>© 2025 Financial Insights Newsletter. All rights reserved.</p>
+                            <p>© 2025 Penny Newsletter. All rights reserved.</p>
                         </td>
                     </tr>
                 </table>
