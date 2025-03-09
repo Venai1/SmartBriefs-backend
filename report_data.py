@@ -1,10 +1,10 @@
 from helperFunctions.get_bank_data import BankDataManager
 from helperFunctions.get_stocks_data import get_stocks_data
 from helperFunctions.get_news_articles_and_summary import get_news_articles_and_summary
+from helperFunctions.generate_open_ai_summary import generate_open_ai_summary
 import pandas as pd
 import numpy as np
 from typing import Dict, Any, List
-from openai import OpenAI
 from datetime import datetime
 import json
 import os
@@ -180,34 +180,11 @@ def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dic
         if largest_transactions and len(largest_transactions) > 0:
             summary_prompt += f" Their largest recent transaction was ${abs(largest_transactions[0]['amount']):.2f} for {largest_transactions[0]['description']}."
         
-        # Load environment variables - ADD THIS LINE
-        load_dotenv()
-        
-        # Get API key from environment
-        api_key = os.getenv("OPEN_AI_API_KEY")
-        
-        # Check if API key exists - ADD THIS CHECK
-        if not api_key:
-            print("Warning: OPEN_AI_API_KEY not found in environment variables")
-            raise ValueError("OpenAI API key not found")
-        
-        # Replace this with your actual OpenAI API key
-        client = OpenAI(api_key=api_key)
-        
         # Log the prompt for debugging
         print(f"Generating summary with prompt: {summary_prompt}")
         
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a financial assistant that summarizes banking data in 1-2 concise sentences."},
-                {
-                    "role": "user", 
-                    "content": summary_prompt
-                }
-            ]
-        )
-        result["accounts_summary"] = response.choices[0].message.content.strip()
+        # Use the centralized function for summary generation
+        result["accounts_summary"] = generate_open_ai_summary(summary_prompt)
         
         # Log success
         print(f"Successfully generated AI summary: {result['accounts_summary']}")

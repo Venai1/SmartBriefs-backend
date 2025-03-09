@@ -7,6 +7,7 @@ def generate_open_ai_summary(system_prompt):
     Generate a summary using OpenAI API with robust error handling.
     """
     load_dotenv()
+
     try:
         # Create OpenAI client WITHOUT proxy settings
         client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
