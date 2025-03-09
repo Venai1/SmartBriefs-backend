@@ -62,7 +62,7 @@ class Address(BaseModel):
 class RegisterRequest(BaseModel):
     first_name: str
     last_name: str
-    address: Address
+    address: Address = None
     email: str
     frequency: str
 
@@ -92,6 +92,38 @@ def convert_numpy_types(obj):
 def register_user(request: RegisterRequest):
     user_ref = db.collection("users").document(request.email)
     user_doc = user_ref.get()
+
+    # Define the hardcoded default address
+    default_address = {
+        "street_number": "123",
+        "street_name": "Main Street",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip": "94105"
+    }
+    
+    # Use the provided address or default if none is provided
+    if request.address is None:
+        # Use default address
+        address_data = default_address
+        # Create an Address object for Capital One API
+        address_obj = Address(
+            street_number=default_address["street_number"],
+            street_name=default_address["street_name"],
+            city=default_address["city"],
+            state=default_address["state"],
+            zip=default_address["zip"]
+        )
+    else:
+        # Use the provided address
+        address_data = {
+            "street_number": request.address.street_number,
+            "street_name": request.address.street_name,
+            "city": request.address.city,
+            "state": request.address.state,
+            "zip": request.address.zip
+        }
+        address_obj = request.address
 
     if user_doc.exists:
         # Existing user handling logic remains the same
@@ -131,12 +163,12 @@ def register_user(request: RegisterRequest):
 
     # Format state and zip code properly
     # State should be a valid 2-letter US state code
-    state = request.address.state.upper()[:2]  # Ensure 2 letter state code
+    state = address_obj.state.upper()[:2]  # Ensure 2 letter state code
     if len(state) < 2:
         state = "CA"  # Default to California if invalid
 
     # Zip should be a valid 5-digit US zip code
-    zip_code = request.address.zip
+    zip_code = address_obj.zip
     # Keep only digits
     zip_digits = ''.join(c for c in zip_code if c.isdigit())
     # Ensure 5 digits, pad with zeros if needed
@@ -150,9 +182,9 @@ def register_user(request: RegisterRequest):
         "first_name": request.first_name,
         "last_name": request.last_name,
         "address": {
-            "street_number": request.address.street_number,
-            "street_name": request.address.street_name,
-            "city": request.address.city,
+            "street_number": address_obj.street_number,
+            "street_name": address_obj.street_name,
+            "city": address_obj.city,
             "state": state,  # Using formatted state
             "zip": zip_code  # Using formatted zip
         }
@@ -233,9 +265,9 @@ def register_user(request: RegisterRequest):
             "first_name": request.first_name,
             "last_name": request.last_name,
             "address": {
-                "street_number": request.address.street_number,
-                "street_name": request.address.street_name,
-                "city": request.address.city,
+                "street_number": address_obj.street_number,
+                "street_name": address_obj.street_name,
+                "city": address_obj.city,
                 "state": state,  # Using formatted state
                 "zip": zip_code  # Using formatted zip
             }
@@ -244,7 +276,7 @@ def register_user(request: RegisterRequest):
         db.collection("users").document(request.email).set(user_data)
         populate_and_create_all_accounts_with_transactions.fill_accounts_with_data(customer_id)
 
-                # Send the email newsletter
+        # Send the email newsletter
         date_range = "30d"  # Default to 30 days - adjust as needed based on your requirements
         send_email.send_financial_newsletter(
             customer_id=user_data["customer_id"], 
@@ -270,6 +302,7 @@ def register_user(request: RegisterRequest):
         print(f"Unexpected error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error processing request: {str(e)}")
 
+        
 @app.post("/get_all_user_data/{customer_id}")
 def get_all_user_data(customer_id:str):
     bank_manager = BankDataManager(os.getenv('NESSIE_API_URL'), os.getenv('NESSIE_API_KEY'))
