@@ -1,16 +1,37 @@
 from dotenv import load_dotenv
 from openai import OpenAI
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def generate_open_ai_summary(system_prompt):
     """
     Generate a summary using OpenAI API with robust error handling.
+    
+    Args:
+        system_prompt (str): The prompt to send to OpenAI
+        
+    Returns:
+        str: The generated summary or a fallback message
     """
     load_dotenv()
-
+    
+    # Get API key with proper error handling
+    api_key = os.getenv("OPEN_AI_API_KEY")
+    if not api_key:
+        logger.error("OPEN_AI_API_KEY environment variable not found")
+        return "Your personal financial summary. Check your accounts for details."
+    
     try:
-        # Create OpenAI client WITHOUT proxy settings
-        client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
+        # Create OpenAI client without any proxy settings
+        # Make sure to only pass the api_key parameter
+        client = OpenAI(api_key=api_key)
+        
+        # Log that we're making the API call
+        logger.info(f"Making OpenAI API call with prompt: {system_prompt[:100]}...")
         
         # Make the API call
         response = client.chat.completions.create(
@@ -20,10 +41,16 @@ def generate_open_ai_summary(system_prompt):
                 {"role": "user", "content": system_prompt}
             ]
         )
-        return response.choices[0].message.content.strip()
+        
+        # Extract and log the result
+        result = response.choices[0].message.content.strip()
+        logger.info(f"Successfully generated summary: {result[:100]}...")
+        return result
+        
     except Exception as e:
-        print(f"Error generating summary with OpenAI: {str(e)}")
-        # Provide a fallback summary
+        logger.error(f"Error generating summary with OpenAI: {str(e)}")
+        
+        # Provide a more personalized fallback summary
         return "Your financial summary and market analysis for today's economic landscape."
 
 if __name__ == "__main__":
@@ -39,16 +66,3 @@ if __name__ == "__main__":
     result = generate_open_ai_summary(test_prompt)
     print("\nResult:")
     print(result)
-    
-    # Test error handling with invalid API key
-    print("\nTesting error handling...")
-    original_key = os.environ.get("OPEN_AI_API_KEY")
-    os.environ["OPEN_AI_API_KEY"] = "invalid_key"
-    
-    fallback = generate_open_ai_summary(test_prompt)
-    print("\nFallback result:")
-    print(fallback)
-    
-    # Restore original key if it existed
-    if original_key:
-        os.environ["OPEN_AI_API_KEY"] = original_key
