@@ -373,21 +373,3 @@ def generate_newsletter(data):
     """
     
     return html
-
-
-if __name__ == "__main__":
-    # Example usage:
-    import json
-    
-    # Load the JSON data (for demonstration purposes)
-    customer_id = "67cbd8d99683f20dd518d75e"
-    customer_data = report_data.get_report_data(customer_id, "30d")
-    
-    # Generate newsletter
-    newsletter_html = generate_newsletter(customer_data)
-    
-    # Save the HTML to a file
-    with open('financial_newsletter_email.html', 'w') as file:
-        file.write(newsletter_html)
-    
-    print("Email-friendly newsletter generated successfully! Open 'financial_newsletter_email.html' in your browser to view it.")
