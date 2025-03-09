@@ -50,7 +50,7 @@
         "Emergency Fund": 53583.19,
         "Daily Expenses": 41941.81
     },
-    "accounts_summary": "John2 Doe has a net worth of $84271.00 with $11254.00 in debt. Recently saved more than spent.",
+    "accounts_summary": "Hey John2! Your finances are looking solid with a net worth of $84,271, but it's great to see you're staying active with recent spending of $3,890.88. Your deposits of $15,874.09 are impressive and are helping to offset the debt of $11,254. Remember to keep an eye on your top spending categories like Entertainment, Electronics, and Dining to stay on track towards your financial goals.",
     "stocks": [
         {
             "ticker": "^GSPC",
@@ -68,7 +68,7 @@
             "status": "Down"
         }
     ],
-    "news_ai_summary": "Today's financial headlines highlight the stock market's resilience after a tough week, with the Dow and S&P managing to trim losses. Additionally, noteworthy developments include Broadcom's stock surge following strong earnings, and Walgreens' transformation into a private-equity project, signaling shifts in the healthcare industry.",
+    "news_ai_summary": "Today's financial news highlights a mix of market performance, individual company successes, and industry developments. The stock market showed resilience in a tough week, Broadcom's soaring stock reflects optimism in the tech industry, and Walgreens' intriguing shift to private equity indicates significant changes in the healthcare sector. Additionally, the inclusion of lumber in the delay of Mexican and Canadian tariffs by the NAHB signals potential relief for the home building industry.",
     "news_articles": [
         {
             "title": "Stock Market Today: Dow, S&P Trim Losses to End a Tough Week - The Wall Street Journal",
