@@ -480,6 +480,9 @@ def send_weekly_newsletters():
         dict: Summary of the operation results
     """
     try:
+
+        global db
+        
         # Query Firestore for users with frequency="weekly"
         users_ref = db.collection("users")
         weekly_users_query = users_ref.where("frequency", "==", "weekly")

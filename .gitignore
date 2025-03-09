@@ -26,7 +26,6 @@ var/
 !.env.template
 
 # Credentials
-serviceAccountKey.json
 *Key.json
 *key.json
 credentials.json
