@@ -1,386 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Financial Newsletter - Demo User</title>
-    <style>
-        body {
-            font-family: 'Merriweather', Georgia, serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        .header {
-            text-align: center;
-            padding: 30px 0;
-            border-bottom: 1px solid #e0e0e0;
-            margin-bottom: 30px;
-        }
-        .header h1 {
-            color: #2ca05a;
-            margin-bottom: 5px;
-            font-size: 36px;
-        }
-        .header p {
-            color: #666;
-            font-size: 18px;
-            margin-top: 0;
-        }
-        .summary-box {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            font-size: 18px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .summary-box h2 {
-            margin-top: 0;
-            color: #2ca05a;
-        }
-        .financial-overview {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 30px;
-        }
-        .networth-card {
-            padding: 25px;
-            margin-bottom: 20px;
-            width: 100%;
-            text-align: center;
-        }
-        .networth-card h3 {
-            margin-top: 0;
-            color: #2ca05a;
-            font-size: 20px;
-        }
-        .networth-card .amount {
-            font-size: 32px;
-            font-weight: bold;
-            color: #333;
-        }
-        .other-finances {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .financial-card {
-            padding: 20px;
-            margin-bottom: 20px;
-            flex: 1;
-            min-width: 200px;
-            margin-right: 15px;
-            text-align: center;
-        }
-        .financial-card:last-child {
-            margin-right: 0;
-        }
-        .financial-card h3 {
-            margin-top: 0;
-            color: #2ca05a;
-            font-size: 18px;
-        }
-        .financial-card .amount {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        .section h2 {
-            color: #2ca05a;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
-        .market-overview {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
-        .market-card {
-            padding: 15px;
-            margin-bottom: 15px;
-            flex: 1;
-            min-width: 200px;
-            margin-right: 15px;
-            text-align: center;
-        }
-        .market-card:last-child {
-            margin-right: 0;
-        }
-        .market-card h3 {
-            margin-top: 0;
-            font-size: 16px;
-        }
-        .market-card .price {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .up {
-            color: #28a745;
-        }
-        .down {
-            color: #dc3545;
-        }
-        .accounts-table, .transactions-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        .accounts-table th, .accounts-table td,
-        .transactions-table th, .transactions-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .accounts-table th, .transactions-table th {
-            background-color: #f5f5f5;
-            font-weight: bold;
-        }
-        .accounts-table tr:last-child td,
-        .transactions-table tr:last-child td {
-            border-bottom: none;
-        }
-        .news-section {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .news-section h2 {
-            color: #2ca05a;
-            border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
-        .news-summary {
-            margin-bottom: 20px;
-        }
-        .news-articles {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .news-item {
-            background-color: #f5f5f5;
-            border-radius: 6px;
-            padding: 10px;
-            flex: 1 1 calc(50% - 15px);
-            min-width: 250px;
-        }
-        .news-item h3 {
-            margin-top: 0;
-            margin-bottom: 5px;
-            font-size: 16px;
-        }
-        .news-item p {
-            margin: 5px 0;
-            color: #666;
-            font-size: 14px;
-        }
-        .news-item a {
-            color: #2ca05a;
-            text-decoration: none;
-        }
-        .news-item a:hover {
-            text-decoration: underline;
-        }
-        .date {
-            color: #888;
-            font-size: 12px;
-        }
-        .footer {
-            text-align: center;
-            padding: 20px 0;
-            margin-top: 30px;
-            border-top: 1px solid #e0e0e0;
-            color: #888;
-        }
+    <!--[if mso]>
+    <style type="text/css">
+        table {border-collapse:collapse;border-spacing:0;margin:0;}
+        div, td {padding:0;}
+        div {margin:0 !important;}
     </style>
+    <noscript>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
 </head>
-<body>
-    <div class="header">
-        <h1>Financial Insights</h1>
-        <p>Your personal financial newsletter - March 09, 2025</p>
-    </div>
+<body style="font-family: Georgia, serif; line-height: 1.6; color: #333333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 0 auto;">
+        <tr>
+            <td style="text-align: center; padding: 30px 0; border-bottom: 1px solid #e0e0e0; margin-bottom: 30px;">
+                <h1 style="color: #2ca05a; margin-bottom: 5px; font-size: 28px;">Financial Insights</h1>
+                <p style="color: #666666; font-size: 16px; margin-top: 5px;">Your personal financial newsletter - March 09, 2025</p>
+            </td>
+        </tr>
+    </table>
 
-    <div class="summary-box">
-        <h2>Summary</h2>
-        <p>Hey Demo User! Your financial health is looking great with a solid net worth of $39,247.64 and no debt to worry about. Keep up the positive momentum as you've managed to decrease your spending trend, especially in top categories like Dining, Services, and Entertainment. Plus, that $978.11 grocery shopping transaction shows you're making smart choices - keep it up!</p>
-    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 20px auto;">
+        <tr>
+            <td style="background-color: white; border-radius: 8px; padding: 20px; font-size: 16px; margin-bottom: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <h2 style="margin-top: 0; color: #2ca05a;">Summary</h2>
+                <p>Hey Demo User! Your financial health is looking great with a solid net worth of $39,247.64 and no debt to worry about. Keep up the positive momentum as you've managed to decrease your spending trend, especially in top categories like Dining, Services, and Entertainment. Plus, that $978.11 grocery shopping transaction shows you're making smart choices - keep it up!</p>
+            </td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <h2>Financial Overview</h2>
-        <div class="financial-overview">
-            <div class="networth-card">
-                <h3>Net Worth</h3>
-                <div class="amount">$39,247.64</div>
-            </div>
-            <div class="other-finances">
-                <div class="financial-card">
-                    <h3>Money Spent</h3>
-                    <div class="amount">$14,137.12</div>
-                </div>
-                <div class="financial-card">
-                    <h3>Money Added</h3>
-                    <div class="amount">$7,203.53</div>
-                </div>
-                <div class="financial-card">
-                    <h3>Money Owed</h3>
-                    <div class="amount">$0.00</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 20px auto;">
+        <tr>
+            <td>
+                <h2 style="color: #2ca05a; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">Financial Overview</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 20px; text-align: center;">
+                <h3 style="margin-top: 0; color: #2ca05a; font-size: 18px;">Net Worth</h3>
+                <div style="font-size: 28px; font-weight: bold; color: #333333;">$39,247.64</div>
+            </td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <h2>The Market</h2>
-        <div class="market-overview">
-            <div class="market-card">
-                <h3>S&P 500</h3>
-                <div class="price down">$5,769.00</div>
-            </div>
-        
-            <div class="market-card">
-                <h3>Dow Jones</h3>
-                <div class="price up">$42,794.00</div>
-            </div>
-        
-            <div class="market-card">
-                <h3>Nasdaq Composite</h3>
-                <div class="price down">$18,193.00</div>
-            </div>
-        
-        </div>
-    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 0 auto;">
+        <tr>
+            <td style="width: 33%; padding: 15px; text-align: center; vertical-align: top;">
+                <h3 style="margin-top: 0; color: #2ca05a; font-size: 16px;">Money Spent</h3>
+                <div style="font-size: 22px; font-weight: bold; color: #333333;">$14,137.12</div>
+            </td>
+            <td style="width: 33%; padding: 15px; text-align: center; vertical-align: top;">
+                <h3 style="margin-top: 0; color: #2ca05a; font-size: 16px;">Money Added</h3>
+                <div style="font-size: 22px; font-weight: bold; color: #333333;">$7,203.53</div>
+            </td>
+            <td style="width: 33%; padding: 15px; text-align: center; vertical-align: top;">
+                <h3 style="margin-top: 0; color: #2ca05a; font-size: 16px;">Money Owed</h3>
+                <div style="font-size: 22px; font-weight: bold; color: #333333;">$0.00</div>
+            </td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <h2>Account Balances</h2>
-        <table class="accounts-table">
-            <thead>
-                <tr>
-                    <th>Account</th>
-                    <th>Balance</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Secondary</td>
-                    <td>$109.03</td>
-                </tr>
-        
-                <tr>
-                    <td>Emergency Fund</td>
-                    <td>$39,138.61</td>
-                </tr>
-        
-            </tbody>
-        </table>
-    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 20px auto;">
+        <tr>
+            <td>
+                <h2 style="color: #2ca05a; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">The Market</h2>
+            </td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <h2>Largest Transactions</h2>
-        <table class="transactions-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>2025-02-20</td>
-                    <td>Grocery shopping</td>
-                    <td>$978.11</td>
-                </tr>
-        
-                <tr>
-                    <td>2</td>
-                    <td>2025-02-16</td>
-                    <td>Dining</td>
-                    <td>$930.60</td>
-                </tr>
-        
-                <tr>
-                    <td>3</td>
-                    <td>2025-02-23</td>
-                    <td>Bill payment</td>
-                    <td>$928.46</td>
-                </tr>
-        
-            </tbody>
-        </table>
-    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 0 auto;">
+        <tr>
+            <td style="width: 33%; padding: 10px; text-align: center; vertical-align: top;">
+                <h3 style="margin-top: 0; font-size: 16px;">S&P 500</h3>
+                <div style="font-size: 18px; font-weight: bold; color: #dc3545;">$5,769.00</div>
+            </td>
+            <td style="width: 33%; padding: 10px; text-align: center; vertical-align: top;">
+                <h3 style="margin-top: 0; font-size: 16px;">Dow Jones</h3>
+                <div style="font-size: 18px; font-weight: bold; color: #28a745;">$42,794.00</div>
+            </td>
+            <td style="width: 33%; padding: 10px; text-align: center; vertical-align: top;">
+                <h3 style="margin-top: 0; font-size: 16px;">Nasdaq Composite</h3>
+                <div style="font-size: 18px; font-weight: bold; color: #dc3545;">$18,193.00</div>
+            </td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <h2>Largest Deposits</h2>
-        <table class="transactions-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>2025-02-26</td>
-                    <td>Salary deposit</td>
-                    <td>$7,203.53</td>
-                </tr>
-        
-            </tbody>
-        </table>
-    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 20px auto;">
+        <tr>
+            <td>
+                <h2 style="color: #2ca05a; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">Account Balances</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0 0 20px 0;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; border-collapse: collapse;">
+                    <tr style="background-color: #f5f5f5;">
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Account</th>
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Balance</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Secondary</td>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">$109.03</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px 15px; text-align: left;">Emergency Fund</td>
+                        <td style="padding: 12px 15px; text-align: left;">$39,138.61</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-    <div class="news-section">
-        <h2>Financial News</h2>
-        <div class="news-summary">
-            <p>President Trump blames "globalists" for the recent stock market decline as Dow Jones Futures show volatility. Additionally, he has created a Strategic Bitcoin Reserve ahead of a White House crypto summit, causing market uncertainty. Fund manager’s confident remarks on Marvell stock have gained attention as Palantir faces a plunge, contrasting with Broadcom's jump in late trading.</p>
-        </div>
-        <div class="news-articles">
-            <div class="news-item">
-                <h3><a href="https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-trump-blames-globalists-nvidia-tesla-palantir-broadcom-jobs-report/" target="_blank">Dow Jones Futures: Trump Blames 'Globalists' For Market Dive; Palantir Plunges As Broadcom Jumps Late - Investor's Business Daily</a></h3>
-                <p class="date">Investor's Business Daily · March 07, 2025</p>
-            </div>
-        
-            <div class="news-item">
-                <h3><a href="https://www.cnn.com/2025/03/06/business/strategic-bitcoin-reserve-trump/index.html" target="_blank">Trump creates a Strategic Bitcoin Reserve one day ahead of White House crypto summit - CNN</a></h3>
-                <p class="date">CNN · March 07, 2025</p>
-            </div>
-        
-            <div class="news-item">
-                <h3><a href="https://www.thestreet.com/investing/fund-managers-bold-words-on-marvell-stock-turn-heads" target="_blank">Fund manager’s bold words on Marvell stock turn heads - TheStreet</a></h3>
-                <p class="date">TheStreet · March 07, 2025</p>
-            </div>
-        
-            <div class="news-item">
-                <h3><a href="https://www.cnbc.com/2025/03/06/trump-blames-globalists-for-stock-market-sell-off.html" target="_blank">Trump blames ‘globalists’ for stock market sell-off - CNBC</a></h3>
-                <p class="date">CNBC · March 06, 2025</p>
-            </div>
-        
-            <div class="news-item">
-                <h3><a href="https://www.investopedia.com/trump-to-hold-crypto-summit-friday-what-you-need-to-know-11692575" target="_blank">Trump To Hold Crypto Summit Friday—What You Need To Know - Investopedia</a></h3>
-                <p class="date">Investopedia · March 06, 2025</p>
-            </div>
-        
-        </div>
-    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 20px auto;">
+        <tr>
+            <td>
+                <h2 style="color: #2ca05a; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">Largest Transactions</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0 0 20px 0;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; border-collapse: collapse;">
+                    <tr style="background-color: #f5f5f5;">
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">#</th>
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Date</th>
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Description</th>
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Amount</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">1</td>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">2025-02-20</td>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Grocery shopping</td>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">$978.11</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">2</td>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">2025-02-16</td>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Dining</td>
+                        <td style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">$930.60</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px 15px; text-align: left;">3</td>
+                        <td style="padding: 12px 15px; text-align: left;">2025-02-23</td>
+                        <td style="padding: 12px 15px; text-align: left;">Bill payment</td>
+                        <td style="padding: 12px 15px; text-align: left;">$928.46</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-    <div class="footer">
-        <p>© Penny. All rights reserved.</p>
-    </div>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 20px auto;">
+        <tr>
+            <td>
+                <h2 style="color: #2ca05a; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">Largest Deposits</h2>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 0 0 20px 0;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; border-collapse: collapse;">
+                    <tr style="background-color: #f5f5f5;">
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">#</th>
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Date</th>
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Description</th>
+                        <th style="padding: 12px 15px; text-align: left; border-bottom: 1px solid #e0e0e0;">Amount</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px 15px; text-align: left;">1</td>
+                        <td style="padding: 12px 15px; text-align: left;">2025-02-26</td>
+                        <td style="padding: 12px 15px; text-align: left;">Salary deposit</td>
+                        <td style="padding: 12px 15px; text-align: left;">$7,203.53</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 20px auto; background-color: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+        <tr>
+            <td style="padding: 20px;">
+                <h2 style="color: #2ca05a; border-bottom: 1px solid #e0e0e0; padding-bottom: 10px;">Financial News</h2>
+                <p>President Trump blames "globalists" for the recent stock market decline as Dow Jones Futures show volatility. Additionally, he has created a Strategic Bitcoin Reserve ahead of a White House crypto summit, causing market uncertainty. Fund manager's confident remarks on Marvell stock have gained attention as Palantir faces a plunge, contrasting with Broadcom's jump in late trading.</p>
+                
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 10px 0;">
+                    <tr>
+                        <td style="background-color: #f5f5f5; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+                            <h3 style="margin-top: 0; margin-bottom: 5px; font-size: 16px;">
+                                <a href="https://www.investors.com/market-trend/stock-market-today/dow-jones-futures-trump-blames-globalists-nvidia-tesla-palantir-broadcom-jobs-report/" target="_blank" style="color: #2ca05a; text-decoration: none;">Dow Jones Futures: Trump Blames 'Globalists' For Market Dive; Palantir Plunges As Broadcom Jumps Late - Investor's Business Daily</a>
+                            </h3>
+                            <p style="color: #888888; font-size: 12px; margin: 5px 0;">Investor's Business Daily · March 07, 2025</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 10px 0;">
+                    <tr>
+                        <td style="background-color: #f5f5f5; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+                            <h3 style="margin-top: 0; margin-bottom: 5px; font-size: 16px;">
+                                <a href="https://www.cnn.com/2025/03/06/business/strategic-bitcoin-reserve-trump/index.html" target="_blank" style="color: #2ca05a; text-decoration: none;">Trump creates a Strategic Bitcoin Reserve one day ahead of White House crypto summit - CNN</a>
+                            </h3>
+                            <p style="color: #888888; font-size: 12px; margin: 5px 0;">CNN · March 07, 2025</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 10px 0;">
+                    <tr>
+                        <td style="background-color: #f5f5f5; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+                            <h3 style="margin-top: 0; margin-bottom: 5px; font-size: 16px;">
+                                <a href="https://www.thestreet.com/investing/fund-managers-bold-words-on-marvell-stock-turn-heads" target="_blank" style="color: #2ca05a; text-decoration: none;">Fund manager's bold words on Marvell stock turn heads - TheStreet</a>
+                            </h3>
+                            <p style="color: #888888; font-size: 12px; margin: 5px 0;">TheStreet · March 07, 2025</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 10px 0;">
+                    <tr>
+                        <td style="background-color: #f5f5f5; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+                            <h3 style="margin-top: 0; margin-bottom: 5px; font-size: 16px;">
+                                <a href="https://www.cnbc.com/2025/03/06/trump-blames-globalists-for-stock-market-sell-off.html" target="_blank" style="color: #2ca05a; text-decoration: none;">Trump blames 'globalists' for stock market sell-off - CNBC</a>
+                            </h3>
+                            <p style="color: #888888; font-size: 12px; margin: 5px 0;">CNBC · March 06, 2025</p>
+                        </td>
+                    </tr>
+                </table>
+
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin: 10px 0;">
+                    <tr>
+                        <td style="background-color: #f5f5f5; border-radius: 6px; padding: 15px; margin-bottom: 10px;">
+                            <h3 style="margin-top: 0; margin-bottom: 5px; font-size: 16px;">
+                                <a href="https://www.investopedia.com/trump-to-hold-crypto-summit-friday-what-you-need-to-know-11692575" target="_blank" style="color: #2ca05a; text-decoration: none;">Trump To Hold Crypto Summit Friday—What You Need To Know - Investopedia</a>
+                            </h3>
+                            <p style="color: #888888; font-size: 12px; margin: 5px 0;">Investopedia · March 06, 2025</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 600px; margin: 0 auto;">
+        <tr>
+            <td style="text-align: center; padding: 20px 0; margin-top: 30px; border-top: 1px solid #e0e0e0; color: #888888;">
+                <p>© Penny. All rights reserved.</p>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
-    
