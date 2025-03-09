@@ -4,11 +4,12 @@ from helperFunctions.get_news_articles_and_summary import get_news_articles_and_
 import pandas as pd
 import numpy as np
 from typing import Dict, Any, List
-from openai import OpenAI # Assuming this is installed for LLM summary
+from openai import OpenAI
 from datetime import datetime
 import json
-from datetime import datetime
-import numpy as np
+import os
+from dotenv import load_dotenv  # Add this import
+
 
 def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dict[str, Any]:
     """
@@ -21,6 +22,7 @@ def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dic
     Returns:
     Dictionary with comprehensive customer financial data
     """
+    
     # Initialize bank manager
     api_url = "http://api.nessieisreal.com"
     api_key = "9699a5b7260039b6a8fac75cf9dae5d0"
@@ -170,16 +172,30 @@ def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dic
         )
         
         if top_categories:
-            summary_prompt += f"Their top spending categories include {top_categories}. "
+            summary_prompt += f" Their top spending categories include {top_categories}."
         
         if spending_trend:
-            summary_prompt += f"Their spending trend is {spending_trend}. "
+            summary_prompt += f" Their spending trend is {spending_trend}."
             
         if largest_transactions and len(largest_transactions) > 0:
-            summary_prompt += f"Their largest recent transaction was ${abs(largest_transactions[0]['amount']):.2f} for {largest_transactions[0]['description']}. "
+            summary_prompt += f" Their largest recent transaction was ${abs(largest_transactions[0]['amount']):.2f} for {largest_transactions[0]['description']}."
+        
+        # Load environment variables - ADD THIS LINE
+        load_dotenv()
+        
+        # Get API key from environment
+        api_key = os.getenv("OPEN_AI_API_KEY")
+        
+        # Check if API key exists - ADD THIS CHECK
+        if not api_key:
+            print("Warning: OPEN_AI_API_KEY not found in environment variables")
+            raise ValueError("OpenAI API key not found")
         
         # Replace this with your actual OpenAI API key
-        client = OpenAI(api_key=os.getenv("OPEN_AI_API_KEY"))
+        client = OpenAI(api_key=api_key)
+        
+        # Log the prompt for debugging
+        print(f"Generating summary with prompt: {summary_prompt}")
         
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -192,18 +208,24 @@ def get_customer_banking_summary(customer_id: str, timestamp: str = None) -> Dic
             ]
         )
         result["accounts_summary"] = response.choices[0].message.content.strip()
+        
+        # Log success
+        print(f"Successfully generated AI summary: {result['accounts_summary']}")
+        
     except Exception as e:
+        # More detailed error message
+        print(f"Error generating AI summary: {str(e)}")
         result["accounts_summary"] = (
             f"{result['name']} has a net worth of ${result['net_worth']:.2f} with ${result['money_owed']:.2f} in debt. "
             f"Recently {'spent' if result['money_spent'] > result['money_added'] else 'saved'} more than "
             f"{'earned' if result['money_spent'] > result['money_added'] else 'spent'}."
         )
+        print(f"Using fallback summary: {result['accounts_summary']}")
     
     return result
 
 def save_to_json(data, filename="customer_summary.json"):
     """Save data dictionary to a JSON file"""
-
     
     # Handle datetime objects, NumPy types, and other non-serializable types
     def json_serial(obj):
@@ -247,7 +269,7 @@ def save_to_json(data, filename="customer_summary.json"):
     
     print(f"Data saved to {filename}")
 
-def get_report_data(customer_id,time_period):
+def get_report_data(customer_id, time_period):
     summary = get_customer_banking_summary(customer_id, time_period)
     news_data = get_news_articles_and_summary()
     tickers = ["^GSPC","^DJI","^IXIC"]
@@ -260,6 +282,14 @@ def get_report_data(customer_id,time_period):
 
 # Example usage
 if __name__ == "__main__":
+    # Load environment variables
+    load_dotenv()
+    
+    # Check if OpenAI API key exists
+    if not os.getenv("OPEN_AI_API_KEY"):
+        print("WARNING: OPEN_AI_API_KEY not found in environment variables.")
+        print("Please set this in your .env file or environment.")
+    
     customer_id = "67cb640c9683f20dd518d16f"
     time_period = "30d"
     
@@ -272,6 +302,7 @@ if __name__ == "__main__":
     save_to_json(summary)
     
     # Print key information
+    print("\n=== CUSTOMER SUMMARY ===")
     print(f"Customer: {summary['name']}")
     print(f"Summary: {summary['accounts_summary']}")
     print(f"Net Worth: ${summary['net_worth']:.2f}")
