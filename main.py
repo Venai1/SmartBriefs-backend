@@ -626,7 +626,7 @@ async def send_demo_email(email: str):
 
         # Send email via Resend
         params = {
-            "from": "SmartBriefs <smartbriefs@newsletter.venai.dev>",
+            "from": "Penny <penny@newsletter.venai.dev>",
             "to": [email],
             "subject": subject,
             "html": newsletter_html
