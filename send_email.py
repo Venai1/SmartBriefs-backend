@@ -131,7 +131,7 @@ def send_financial_newsletter(customer_id, date_range, recipient_email):
         # Continue with email sending even if database update fails
 
     params: resend.Emails.SendParams = {
-        "from": "SmartBriefs <smartbriefs@newsletter.venai.dev>",
+        "from": "Penny <penny@newsletter.venai.dev>",
         "to": [recipient_email],
         "subject": subject,
         "html": newsletter_html
