@@ -19,14 +19,22 @@ from starlette.middleware.cors import CORSMiddleware
 import send_email
 import resend
 
-cred = credentials.Certificate("serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+load_dotenv()
+
+if os.environ.get("FIREBASE_SERVICE_ACCOUNT"):
+    try:
+        service_account_info = json.loads(os.environ.get("FIREBASE_SERVICE_ACCOUNT"))
+        cred = credentials.Certificate(service_account_info)
+        firebase_admin.initialize_app(cred)
+        db = firestore.client()
+        print("Firebase initialized with environment variables")
+    except Exception as e:
+        print(f"Error initializing Firebase with environment variable: {str(e)}")
+
 
 tickers = ["^GSPC", "^DJI", "^IXIC"]
 
 app = FastAPI()
-load_dotenv()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
